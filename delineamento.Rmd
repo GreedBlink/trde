@@ -1,0 +1,84 @@
+---
+title: "Delineamento de Experimentos"
+author: "Uso de sobredoses de vitamina B12 na diminuição de aterosclerose, em pacientes com a doença."
+date: "`r format(Sys.Date(),'%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+
+
+
+
+## Introdução
+
+A aterosclerose é caracterizada pela formação de placas de gordura e tecido fibroso nas paredes internas das artérias, causando obstruções que impedem o fluxo sanguíneo. Trata-se da principal causa de infartos, acidentes vasculares e doença arterial periférica.
+
+Capaz de afetar qualquer artéria do corpo, a condição tem início durante a infância/juventude e piora com o tempo. É assintomática durante a maior parte do seu desenvolvimento e muitas vezes só é descoberta após o surgimento de alguma complicação
+
+
+
+## Metodologia 
+
+
+  - Unidade experimental: Paciente com a doença
+  - Variável resposta: diminuição da aterosclerose (diâmetro do calibre em mm)
+  - Tratamentos em comparação (níveis): dose padrão, sobredose média e alta
+  - Designação dos tratamentos: por sorteio
+  - Número de repetições: 12 doentes por tratamento
+
+
+## New Styles
+
+`html_pretty` currently supports three page themes (`cayman`, `tactile` and
+`architect`), and two syntax highlight styles (`github` and `vignette`).
+The theme and highlight styles can be specified in the document metadata,
+for example:
+
+```yaml
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+```
+
+## Your Familiar Tools
+
+Feel free to use the `knitr` infrastructure with dozens of tunable options in
+your document.
+
+```{r fig.width=6, fig.height=6, fig.align='center'}
+set.seed(123)
+n <- 1000
+x1  <- matrix(rnorm(n), ncol = 2)
+x2  <- matrix(rnorm(n, mean = 3, sd = 1.5), ncol = 2)
+x   <- rbind(x1, x2)
+head(x)
+smoothScatter(x, xlab = "x1", ylab = "x2")
+```
+
+You can include code snippets of languages other than R, but note that
+the block header has no curly brackets around the language name.
+
+```cpp
+// [[Rcpp::export]]
+NumericVector timesTwo(NumericVector x) {
+    return x * 2;
+}
+```
+
+You can also write math expressions, e.g. $Y = X\beta + \epsilon$,
+footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(iris, 10))
+```
+
+## Stay Tuned
+
+Please visit the [development page](http://github.com/yixuan/prettydoc/) of the 
+`prettydoc` package for latest updates and news. Comments, bug reports and
+pull requests are always welcome.
