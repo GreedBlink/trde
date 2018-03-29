@@ -36,3 +36,14 @@ Propomos um trabalho com a diferença entre os diâmetros das artérias entre o 
   - Tratamentos em comparação (níveis): dose padrão, sobredose média e alta
   - Designação dos tratamentos: por sorteio
   - Número de repetições: 12 doentes por tratamento
+
+### Variáveis
+
+- **Variável resposta:** Diferença do diâmetro antes e depois da sobredose de vitamina B12.
+
+- **Fator**: Dose de vitamina B12.
+    - **Níveis:**
+        - Dose padrão;
+        - Sobredose méda;
+        - Sobredose alta.
+        
