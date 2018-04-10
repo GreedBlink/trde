@@ -1,0 +1,27 @@
+---
+title: "Testes de Comparações Multiplas"
+author: "Jonatha Azevedo"
+date: "10 de abril de 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Aboradaremos os seguintes testes de comparações múltiplas: 
+  - LSD de Fichser
+  - Ducam
+  - Tukey (HSD)
+  - Dunnet
+  - Sheffé
+  - Bonferrone
+  
+  
+###  LSD de Fichser
+###  Ducam
+###  Tukey (HSD)
+###  Dunnet
+###  Sheffé
+###  Bonferrone
+  
