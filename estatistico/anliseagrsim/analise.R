@@ -88,7 +88,12 @@ wilcox.test(base$pesos[base$ind == 1], base$pesos[base$ind == 3])
 wilcox.test(base$pesos[base$ind == 2], base$pesos[base$ind == 3])
 # dist diferem
 
-# Então temos diferença significativa
+# Então temos diferença significativa entre os grupos 1 e 3 e entre 2 e 3.
+# Então podemos dizer que há diferença significativa do peso das laranjas com dose 
+# atualmente aplicada de agrotóxicos, em relação às laranjas sem agrotóxicos 
+# e com a metade da dose atualmente aplicada.
+
+
 # modelo <- aov(pesos~ind, data = base)
 # summary(modelo)
 # anova(modelo)
