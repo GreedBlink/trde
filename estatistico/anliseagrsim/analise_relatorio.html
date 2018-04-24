@@ -115,6 +115,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Para os testes aplicados em seguida, utilizamos um nível de significância estatística de 5%.</p>
 <div id="tese-para-detectar-normalidade-shapiro" class="section level4">
 <h4>Tese para detectar normalidade (Shapiro)</h4>
+<p>O teste de shapiro, teste para normalidade, considera as seguintes hipóteses:</p>
+<ol style="list-style-type: decimal">
+<li>Formulação da Hipótese:</li>
+</ol>
+<p><span class="math display">\[\begin{cases}
+ H_{0}: \mbox{A amostra provém de uma população Normal} \\ 
+  H_{1}: \mbox{A amostra não provém de uma população Normal} 
+\end{cases}\]</span></p>
 <p>Primeiro para o tratamento <strong>sem agrotóxicos</strong> (<em>nível 1</em>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">base <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(ind <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -156,6 +164,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="teste-de-kruskal" class="section level4">
 <h4>Teste de kruskal</h4>
 <p>Verificamos se os níveis representados, possuiem a mesma distribuição (hipótese nula). O teste de Kruskal é uma extensão do teste de Wilcoxon, que seá também utilizado na análise.</p>
+<p>O teste de Kruskal-Wallis é o análogo ao teste F utilizado na ANOVA 1 fator. Enquanto a análise de variância dos testes dependem da hipótese de que todas as populações em confronto são independentes e normalmente distribuídas, o teste de Kruskal-Wallis não coloca nenhuma restrição sobre a comparação. Suponha que os dados provenham de k amostras aleatórias independentes com tamanhos amostrais <span class="math inline">\(n_1, n_2, \dots, n_k\)</span> sendo <span class="math inline">\(N = n_1 + n_2 + \dots + n_k\)</span> o número total de elementos considerados em todas as amostras.</p>
+<p>Considerando as seguintes hipóteses:</p>
+<p><span class="math display">\[\begin{cases}
+ H_{0}: \tau_1 = \tau_2 = \dots = \tau_n \\ 
+  H_{1}: \tau_1,\tau_2,\dots,\tau_n  \mbox{ pelo menos um difere} 
+\end{cases}\]</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kruskal.test</span>(pesos<span class="op">~</span>ind, <span class="dt">data =</span> base)</code></pre></div>
 <pre><code>## 
 ##  Kruskal-Wallis rank sum test

@@ -76,6 +76,15 @@ Para os testes aplicados em seguida, utilizamos um nível de significância esta
 
 #### Tese para detectar normalidade (Shapiro)
 
+O teste de shapiro, teste para normalidade,  considera as seguintes hipóteses: 
+
+ $$\begin{cases}
+ H_{0}: \mbox{A amostra provém de uma população Normal} \\ 
+  H_{1}: \mbox{A amostra não provém de uma população Normal} 
+\end{cases}$$
+ 
+
+
 Primeiro para o tratamento **sem agrotóxicos** (*nível 1*): 
 
 ```{r}
@@ -154,6 +163,17 @@ Com essa configuração, ao nível de significância estatística de 5 %, que a 
 #### Teste de kruskal 
 
 Verificamos se os níveis representados, possuiem a mesma distribuição (hipótese nula). O teste de Kruskal é uma extensão do teste de Wilcoxon, que seá também utilizado na análise.
+
+
+O teste de Kruskal-Wallis é o análogo ao teste F utilizado na ANOVA 1 fator. Enquanto a análise de variância dos testes dependem da hipótese de que todas as populações em confronto são independentes e normalmente distribuídas, o teste de Kruskal-Wallis não coloca nenhuma restrição sobre a comparação. Suponha que os dados provenham de k amostras aleatórias independentes com tamanhos amostrais $n_1, n_2, \dots, n_k$ sendo $N = n_1 + n_2 + \dots + n_k$ o número total de elementos considerados em todas as amostras.
+
+
+Considerando as seguintes hipóteses:
+
+$$\begin{cases}
+ H_{0}: \tau_1 = \tau_2 = \dots = \tau_n \\ 
+  H_{1}: \tau_1,\tau_2,\dots,\tau_n  \mbox{ pelo menos um difere} 
+\end{cases}$$
 
 ```{r}
 kruskal.test(pesos~ind, data = base)
