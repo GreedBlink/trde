@@ -2,7 +2,7 @@ require(dplyr)
 require(ggplot2)
 require(stringr)
 
-base <- read.csv("/home/117054012/Área de trabalho/base_3.csv",
+base <- read.csv("base_3.csv",
                  stringsAsFactors = F)
 
 base <- base %>% 
@@ -39,6 +39,7 @@ base %>%
   filter(ind == 1) %>% 
   pull(pesos) %>% 
   qqnorm(pch = 20) 
+
 base %>% 
   filter(ind == 1) %>% 
   pull(pesos) %>% 
