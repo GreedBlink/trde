@@ -25,11 +25,11 @@ Todo o plantio foi realizado numa área 2.197,97$m^{2}$ e divida em 3 estufas de
 
 ## Descrição das variáveis medidas no objeto de estudo
 
-A variável resposta: Peso total das laranjas (em Kg) por pé.
+**variável resposta**: Peso total das laranjas (em Kg) por pé.
 
 **Fator**: Grupo de utilização de agrotóxico
 
-Níveis: 
+**Níveis**: 
 
   - 1 = sem agrotóxico
   - 2 = com metade da dose atualmente aplicada
