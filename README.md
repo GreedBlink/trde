@@ -34,3 +34,9 @@ Este estudo tem a finalidade de avaliar o quanto a quantidade de agrotóxicos ut
 <br><hr><br>
 
 ## Trabalho 2
+
+
+### Parte Teórica
+
+
+### Parte Estatística
