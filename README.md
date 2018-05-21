@@ -1,10 +1,13 @@
-# Trabalho de Delineamento de Experimentos
+# Trabalhos de Delineamento de Experimentos
+
+
+## Trabalho 1
 
 O trabalho consiste em duas partes: 
    - Criamos um projeto de delineamento de experimento para outro grupo análisar e encontrar as nuancias de nossa simulação, tentando responder as perguntas que criamos. 
    - Fazer a análise de outro trabalho tentando responder as perguntas feitas pelo grupo responsável pela parte teórica.
 
-## Parte Teórica:
+### Parte Teórica:
 
    - Uso de sobredoses de vitamina B12 na diminuição de aterosclerose, em pacientes com a doença 
     
@@ -17,7 +20,7 @@ O trabalho consiste em duas partes:
   - Número de repetições: 12 doentes por tratamento
   
   
-## Parte Estatística
+### Parte Estatística
 
    - Efeito de agrotóxicos na produção de laranjas
 
@@ -27,4 +30,7 @@ Este estudo tem a finalidade de avaliar o quanto a quantidade de agrotóxicos ut
   - Variável resposta: : Peso total das laranjas (em Kg) por pé
   - Tratamentos em comparação (níveis): sem agrotóxico, com metade da dose atualmente aplicada e  com a dose atualmente aplciada
   - Designação dos tratamentos: por sorteio
-  
+
+<br><hr><br>
+
+## Trabalho 2
