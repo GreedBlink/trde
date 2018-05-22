@@ -35,8 +35,16 @@ Este estudo tem a finalidade de avaliar o quanto a quantidade de agrotóxicos ut
 
 ## Trabalho 2
 
-
 ### Parte Teórica
 
+- Uso de diferentes serviços de entrega de pacotes da sede para diferentes filiais
+    
+  O experimento leva em consideração envios de pacotes por diferentes 4 diferentes tipos de serviços de entrega. Definimos nosso experimento da seguinte forma:
+
+  - Unidade experimental: serviço de entrega
+  - Variável resposta: qual o serviço de entrega é mais rapido
+  - Tratamentos em comparação (níveis): serviço de entrega 1, serviço de entrega 2, serviço de entrega 3, serviço de entrega 4 e serviço de entrega 5
+  - Designação dos tratamentos: por sorteio
+  - Número de repetições: 
 
 ### Parte Estatística
