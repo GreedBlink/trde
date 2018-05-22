@@ -1,6 +1,6 @@
 ---
 title: "Delineamento de Experimentos - em Blocos"
-subtitle: "Uso de sobredoses de vitamina B12 na diminuição de aterosclerose, em pacientes com a doença."
+subtitle: "Serviços de entrega"
 author:  "Jonatha Azevedo/Leonardo Filgueira"
 date: "`r format(Sys.Date(),'%d de %B de %Y')`"
 output:
@@ -11,65 +11,74 @@ output:
 
 ## Introdução
 
-A aterosclerose é caracterizada pela formação de placas de gordura e tecido fibroso nas paredes internas das artérias, causando obstruções que impedem o fluxo sanguíneo. Trata-se da principal causa de infartos, acidentes vasculares e doença arterial periférica.
-
-Capaz de afetar qualquer artéria do corpo, a condição tem início durante a infância/juventude e piora com o tempo. É assintomática durante a maior parte do seu desenvolvimento e muitas vezes só é descoberta após o surgimento de alguma complicação.
+Cosiderando uma empresa que regularmente tem que enviar encomendas entre suas várias filiais e tem a opção de usar três serviços concorrentes de entrega de encomendas, os quais cobram valores aproximadamente semelhantes para cada entrega. 
 
 ## Objetivos
+  
+  Determinar qual serviço de entrega usar.
 
-
-Temos o objetivo de identificar se é estatisticamente significante o uso de sobredoses de vitamina B12 para diminuição da aterosclerose (nossa variável resposta). Logo, nosso experimento tenta identificar se o uso de sobredose de vitamina B12 aumenta o diâmetro da artéria (em mm), já que a doença faz com que essas artérias entupam com o progresso da doença.
 
 ## Metodologia 
 
-Propomos um trabalho com a diferença entre os diâmetros das artérias entre o início do tratamento e depois das unidades experimentais terem sido submetidas ao tratamento com a sobredose de vitamina B12. Logo, qualquer aumento de diâmetro após o tratamento é considerado um bom resultado para o experimento realizado.
+Propomos um experimento enviando quatro pacotes de sua matriz para cada um das cinco filias contabilizando o tempo de cada pacote. 
 
-  - Unidade experimental: Paciente com a doença.
-  - Variável resposta: diminuição da aterosclerose (diâmetro do calibre em mm).
-  - Tratamentos em comparação (níveis): nenhuma dose, dose padrão, sobredose média e alta.
+  - Unidade experimental: .
+  - Variável resposta: Tempo de entrega.
+  - Tratamentos em comparação (níveis): .
   - Designação dos tratamentos: por sorteio.
-  - Número de repetições: 100 doentes por tratamento.
+  - Número de repetições: .
 
-Nessa metogologia, estamos considerando o uso de blocos tentando obter o máximo de homogeneidade dentro dos grupos e heterogeneidade entre os grupos.
+Nessa metogologia, estamos considerando o uso de blocos casualizados (o método mais utilizado de todos os delineamentos) tentando obter o máximo de homogeneidade dentro dos grupos e heterogeneidade entre os grupos.
 
 
 ### Variáveis
 
-- **Variável resposta:** Diferença do diâmetro antes e depois da sobredose de vitamina B12.
+- **Variável resposta:** Tempo de entrega.
 
-- **Fator**: Dose de vitamina B12.
+- **Fator**: serviço de entrega.
     - **Níveis:**
-        - Nenhuma dose;
-        - Dose padrão;
-        - Sobredose méda;
-        - Sobredose alta.
+        - ;
+        - ;
+        - ;
+        - .
 
-### Pacientes
+### Alguma coisa
 
-Os pacientes (representados pelo seu id) foram divididos, aleatoriamente, nos 4 grupos, na seguinte configuração:
+
 
 ```{r echo = F, message=F, warning=FALSE}
-require(dplyr)
-pacientes <- tibble(
-              id = 1:400,
-              grupo = paste("Grupo", rep(1:4, each = 100)),
-              dose = rep(c("Nenhuma", "Padrão", "Sobredose média", "Sobredose alta"), each = 100)
-              )
-DT::datatable(pacientes, rownames = F)
+delivery.df = data.frame(
+  Service = c(rep("Pacote 1", 15), rep("Pacote 2", 15),
+    rep("Pacote 3", 15), rep("Pacote 4",15)),
+  Destino = c(rep(c("Filial 1", "Filial 2", "Filial 3",
+    "Filial 4", "Filial 5","Filial 6"),10)),
+  Time = c(15.23, 14.32, 14.77, 15.12, 14.05,
+  15.48, 14.13, 14.46, 15.62, 14.23, 15.19, 14.67, 14.48, 15.34, 14.22,
+  16.66, 16.27, 16.35, 16.93, 15.05, 16.98, 16.43, 15.95, 16.73, 15.62,
+  16.53, 16.26, 15.69, 16.97, 15.37, 17.12, 16.65, 15.73, 17.77, 15.52,
+  16.15, 16.86, 15.18, 17.96, 15.26, 16.36, 16.44, 14.82, 17.62, 15.04,
+  16.98, 16.93, 15.48, 17.12, 16.65, 15.73, 15.95, 17.96, 16.36, 14.05,
+  16.43, 15.95, 16.73, 15.62, 16.53)
+)
+DT::datatable(delivery.df, rownames = F)
 ```
+<br><br>
+
+
+
+```{r echo = F, message=F, warning=FALSE, fig.align='center'}
+require(ggplot2)
+ggplot(delivery.df, aes(Time, Destino, colour = Service)) + geom_point()
+```
+
+
+
 
 ## Resultados
 
-Após o experimento, foi medido o diâmetro da artéria afetada e calculada a diferença do diâmetro antes e depois da dose de vitamina B12.
-
 ```{r echo = F}
 
-set.seed(26)
-diferenca <- round(c(rnorm(100, 0, 0.3), rnorm(100, 2.5, 0.3), rnorm(100, 7, 0.3), rnorm(100, 1, 0.3)), 4)
-pacientes %>% 
-  bind_cols(as_tibble(diferenca)) %>% 
-  rename(diferenca = value) %>% 
-  DT::datatable(rownames = F)
+
   
 ```
 
