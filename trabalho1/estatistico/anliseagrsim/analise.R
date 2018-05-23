@@ -2,7 +2,7 @@ require(dplyr)
 require(ggplot2)
 require(stringr)
 
-base <- read.csv("base_3.csv",
+base <- read.csv("trabalho1/estatistico/anliseagrsim/base_3.csv",
                  stringsAsFactors = F)
 
 base <- base %>% 

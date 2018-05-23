@@ -21,7 +21,7 @@ Determinar qual serviço de entrega usar, baseando-se no tempo de entrega das en
 
 Propomos um experimento enviando pacotes da matriz da empresa para cada um das quatro filiais, utilizando 4 serviços de transportadora, contabilizando o tempo de entrega de cada pacote. 
 
-  - Unidade experimental: .
+  - Unidade experimental: efetuar a entrega dos pacotes .
   - Variável resposta: Tempo de entrega (em horas).
   - Tratamentos em comparação: Transportadoras.
   - Blocos: Filiais

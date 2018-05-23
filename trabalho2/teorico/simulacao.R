@@ -41,10 +41,90 @@ ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
   geom_point()
 
 
+
+
+delivery.df %>%
+  ggplot(aes(x = Destino, y = tempo)) + 
+  geom_boxplot(fill = "steelblue") + 
+  theme_bw() + 
+  labs(x = "Filial", y = "Tempo de entrega para cada filial") + 
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))
+
+
 #no grafico, percebemos que o servico 3 tem o menor tempo de entrega dentre todos e que o servico 
 # 1 tem o pior tempo. E podemos perceber uma indicacao de que as diferencas entre os servicos 
 # variam para as quatro filiais e podemos esperar que a interacao seja significativa no modelo
 # ANOVA.
+
+
+# Para todos os testes: alfa = 5%
+
+delivery.df %>% 
+  filter(Transp == "Serviço 1") %>% 
+  pull(tempo) %>% 
+  shapiro.test()
+
+delivery.df %>% 
+  filter(Transp == "Serviço 1") %>% 
+  pull(tempo) %>% 
+  qqnorm(pch = 20) 
+
+delivery.df %>% 
+  filter(Transp == "Serviço 1") %>% 
+  pull(tempo) %>% 
+  qqline(col = "blue")
+
+delivery.df %>% 
+  filter(Transp == "Serviço 2") %>% 
+  pull(tempo) %>%
+  shapiro.test()
+
+
+delivery.df %>% 
+  filter(Transp == "Serviço 2") %>% 
+  pull(tempo) %>% 
+  qqnorm(pch = 20) 
+delivery.df %>% 
+  filter(Transp == "Serviço 2") %>% 
+  pull(tempo) %>%
+  qqline(col = "blue")
+
+
+
+delivery.df %>% 
+  filter(Transp == "Serviço 3") %>% 
+  pull(tempo) %>%
+  shapiro.test()
+
+delivery.df %>% 
+  filter(Transp == "Serviço 3") %>% 
+  pull(tempo) %>%
+  qqnorm(pch = 20) 
+
+delivery.df %>% 
+  filter(Transp == "Serviço 3") %>% 
+  pull(tempo) %>%
+  qqline(col = "blue")
+
+
+delivery.df %>% 
+  filter(Transp == "Serviço 4") %>% 
+  pull(tempo) %>%
+  shapiro.test()
+
+delivery.df %>% 
+  filter(Transp == "Serviço 4") %>% 
+  pull(tempo) %>%
+  qqnorm(pch = 20) 
+
+delivery.df %>% 
+  filter(Transp == "Serviço 4") %>% 
+  pull(tempo) %>%
+  qqline(col = "blue")
+
+
+# Normalidade não rejeitada 
+
 
 #### Teste de homocedasticidade ####
 
@@ -56,20 +136,11 @@ bartlett.test(tempo~Destino, data = delivery.df)
 # Considerando alfa = 5%, não temos evidênicias para rejeitar a hipótese
 # de que todas as variâncias são iguais. 
 
-
-
-
-# Considerando alfa = 5%
-
-
-
-
 delivery.mod1 = aov(tempo ~ Destino+Transp, data = delivery.df)
 summary(delivery.mod1)
 
 # temos fortes evidencias de que ha diferenca entre os servicos de entrega entre as quarto filiais
 #
-
 
 # Diagnostico do modelo ---------------------------------------------------
 
