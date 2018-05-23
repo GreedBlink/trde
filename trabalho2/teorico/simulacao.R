@@ -38,6 +38,7 @@ delivery.df[Destino %in% c("Filial 3", "Filial 4"), tempo := tempo + rnorm(60, 1
 count(delivery.df, Destino)
 count(delivery.df, Transp)
 
+
 ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
   geom_point()
 
@@ -80,9 +81,9 @@ ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Destino)) +
 ggplot(delivery.res, aes(sample = M1.Resid)) + 
   stat_qq()
 
-hist(delivery.res$M1.Resid, prob = T)
+hist(delivery.res$M1.Resid, prob = T,xlim = c(-1,1.5))
 curve(dnorm(x, mean(delivery.res$M1.Resid), 
-            sd(delivery.res$M1.Resid)), add= T)
+            sd(delivery.res$M1.Resid)), add= T,col = 2)
 
 TukeyHSD(delivery.mod1, which = "Transp")
 
@@ -93,6 +94,6 @@ delivery.hsd$Comparison = row.names(delivery.hsd)
 
 ggplot(delivery.hsd, aes(Comparison, y = diff, ymin = lwr, ymax = upr)) +
   geom_pointrange() + 
-  ylab("Difference in Mean Delivery Time by Service") +
+  ylab("Diferença da média de tempo de entrega por serviço") +
   coord_flip()
 
