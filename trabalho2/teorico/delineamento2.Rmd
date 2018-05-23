@@ -1,0 +1,84 @@
+---
+title: "Delineamento de Experimentos - em Blocos"
+subtitle: "Serviços de entrega"
+author:  "Jonatha Azevedo/Leonardo Filgueira"
+date: "`r format(Sys.Date(),'%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+## Introdução
+
+Cosiderando uma empresa que regularmente tem que enviar encomendas entre suas várias filiais e tem a opção de usar três serviços concorrentes de entrega de encomendas, os quais cobram valores aproximadamente semelhantes para cada entrega. 
+
+## Objetivos
+  
+  Determinar qual serviço de entrega usar.
+
+
+## Metodologia 
+
+Propomos um experimento enviando quatro pacotes de sua matriz para cada um das cinco filias contabilizando o tempo de cada pacote. 
+
+  - Unidade experimental: .
+  - Variável resposta: Tempo de entrega.
+  - Tratamentos em comparação (níveis): .
+  - Designação dos tratamentos: por sorteio.
+  - Número de repetições: .
+
+Nessa metogologia, estamos considerando o uso de blocos casualizados (o método mais utilizado de todos os delineamentos) tentando obter o máximo de homogeneidade dentro dos grupos e heterogeneidade entre os grupos.
+
+
+### Variáveis
+
+- **Variável resposta:** Tempo de entrega.
+
+- **Fator**: serviço de entrega.
+    - **Níveis:**
+        - ;
+        - ;
+        - ;
+        - .
+
+### Alguma coisa
+
+
+
+```{r echo = F, message=F, warning=FALSE}
+delivery.df = data.frame(
+  Service = c(rep("Pacote 1", 15), rep("Pacote 2", 15),
+    rep("Pacote 3", 15), rep("Pacote 4",15)),
+  Destino = c(rep(c("Filial 1", "Filial 2", "Filial 3",
+    "Filial 4", "Filial 5","Filial 6"),10)),
+  Time = c(15.23, 14.32, 14.77, 15.12, 14.05,
+  15.48, 14.13, 14.46, 15.62, 14.23, 15.19, 14.67, 14.48, 15.34, 14.22,
+  16.66, 16.27, 16.35, 16.93, 15.05, 16.98, 16.43, 15.95, 16.73, 15.62,
+  16.53, 16.26, 15.69, 16.97, 15.37, 17.12, 16.65, 15.73, 17.77, 15.52,
+  16.15, 16.86, 15.18, 17.96, 15.26, 16.36, 16.44, 14.82, 17.62, 15.04,
+  16.98, 16.93, 15.48, 17.12, 16.65, 15.73, 15.95, 17.96, 16.36, 14.05,
+  16.43, 15.95, 16.73, 15.62, 16.53)
+)
+DT::datatable(delivery.df, rownames = F)
+```
+<br><br>
+
+
+
+```{r echo = F, message=F, warning=FALSE, fig.align='center'}
+require(ggplot2)
+ggplot(delivery.df, aes(Time, Destino, colour = Service)) + geom_point()
+```
+
+
+
+
+## Resultados
+
+```{r echo = F}
+
+
+  
+```
+

@@ -1,0 +1,193 @@
+---
+title: "Delineamento de Experimentos"
+subtitle: "Efeito de agrotóxicos na produção de laranjas - Análise"
+author:  "Jonatha Azevedo/Leonardo Filgueira"
+date: "`r format(Sys.Date(),'%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = F,error=F,fig.align = 'center')
+```
+
+## Descrição do experimento 
+
+Todo o plantio foi realizado numa área 2.197,97$m^{2}$ e divida em 3 estufas de mesmo tamanho (11,6 X 63.16) onde o solo, temperatura,umidade e irrigação foram tratados e controlados sob as mesmas condições. Cada semente foi plantada com uma distância de 2 metros uma da outra e as covas com abertura de 40 x 40 x 40 centímetros totalizando 100 sementes em cada estufa. Todas as sementes usadas foram do mesmo fabricante e plantadas no mesmo dia e hora. Em cada estufa, a mesma condição foi aplicada, sendo que, na primeira estufa não foi aplicado nenhum agrotóxico; na segunda estufa foi aplicada metade da dose de agrotóxicos atualmente utilizada e na terceira estufa foi aplicada a dose atualmente utilizada. Ao final do experimento será comparado o peso total de laranjas em cada estufa.
+
+### Descrição das variáveis medidas no objeto de estudo {#desc}
+
+- **Variável resposta**: Peso total das laranjas (em Kg) por pé.
+
+- **Fator**: Grupo de utilização de agrotóxico
+
+- **Níveis**: 
+
+    - 1 = Sem agrotóxico;
+    - 2 = Metade da dose atualmente aplicada;
+    - 3 = Dose atualmente aplicada.
+
+
+## Análise
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+require(dplyr)
+require(ggplot2)
+require(stringr)
+base <- read.csv("base_3.csv", stringsAsFactors = F)
+
+```
+
+### Análise descritiva {#expl}
+
+Primeiramente, será feita uma análise descritiva dos dados. Abaixo está um box-plot do peso das laranjas considerando as diferentes concentrações de agrotóxicos listadas [acima](#desc).
+
+```{r}
+base %>% 
+  mutate(ind = factor(ind, 
+                      labels = c("Sem agrotóxico", "Metade da dose atualmente aplicada",
+                                 "Dose atualmente aplicada"))) %>% 
+  ggplot(aes(x = ind, y = pesos)) + 
+  geom_boxplot(fill = "steelblue") + 
+  theme_bw() + 
+  labs(x = "Uso de agrotóxico", y = "Peso das laranjas") + 
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20))
+```
+
+Ao analisar o boxplot, pode-se perceber que a distribuição do peso das laranjas é diferente quando a dose de agrotóxicos normalmente utilizada é aplicada. Nota-se que com esta concenctração de agrotóxicos, o peso das laranjas é maior. A seguir, observa-se um histograma dos pesos das laranjas, onde é dividida a distribuição, também pela concentração de agrotóxicos. Ao observar o histograma, confirma-se o que foi notado no box-plot: a distribuição de pesos das laranjas é diferente na situação em que a dose de agrotóxicos utilizada é a concentração normalmente aplicada.
+
+```{r}
+base %>% 
+  mutate(ind = factor(ind, labels = c("Sem agrotóxico", "Metade da dose atualmente aplicada", "Dose atualmente aplicada"))) %>% 
+  ggplot(aes(x = pesos, fill = ind)) + 
+  geom_histogram(binwidth=.7, alpha=0.5, position="identity") + 
+  theme_bw() + 
+  labs(x = "Pesos das laranjas", y = "",
+       title = "Pesos das laranjas em diferentes \nconcentrações de agortóxicos") + 
+  guides(fill=guide_legend(title="Concentração de agrotóxicos"))
+```
+
+### Inferência
+
+A seguir serão realizados testes de hipóteses para confirmar o que já fora notado na [análise exploratória](#expl). Serão realizadas uma série de testes como objetivo de detectar diferença na distribuição do peso das laranjas de acordo com a concentração de agrotóxicos. Para os testes aplicados em seguida, será utilizado um nível de significância estatística de 5%.
+
+#### Teste de normalidade (Shapiro-Wilk)
+
+O teste de Shapiro-Wilk, teste para normalidade, considera as seguintes hipóteses: 
+
+ $$\begin{cases}
+ H_{0}: \mbox{A amostra provém de uma população com distribuição normal} \\ 
+  H_{1}: \mbox{A amostra não provém de uma população com distribuição normal} 
+\end{cases}$$
+
+Será verificada a hipótese de normalidade para cada um dos níveis do fator.
+
+- Primeiro para o tratamento **sem agrotóxicos** (*nível 1*): 
+
+```{r}
+base %>% 
+  filter(ind == 1) %>% 
+  pull(pesos) %>% 
+  shapiro.test()
+```
+
+Com o p-valor de `0.988` não é possível rejeitar a hipótese de normalidade dos dados para o tratamento do nível 1. Também ao verificar o qqplot pode-se supor que é razoável supor que estes dados podem vir de uma população com distribuição normal.
+
+```{r,echo =F}
+base %>% 
+  filter(ind == 1) %>% 
+  pull(pesos) %>% 
+  qqnorm(pch = 20) 
+
+base %>% 
+  filter(ind == 1) %>% 
+  pull(pesos) %>% 
+  qqline(col = "blue")
+```
+
+- Em seguida para o tratamento com **metade da dose atualmente aplicada** (*nível 2*):
+
+```{r}
+base %>% 
+  filter(ind == 2) %>% 
+  pull(pesos) %>% 
+  shapiro.test()
+```
+
+Com o p-valor de `0.048` rejeita-se a hipótese de normalidade dos dados para o tratamento do nível 2. Ao observar o qqplot pode se notar que os quantis da amostra estão distantes dos quantis de uma distribuição normal.
+
+```{r,echo = F}
+base %>% 
+  filter(ind == 2) %>% 
+  pull(pesos) %>% 
+  qqnorm(pch = 20) 
+
+base %>% 
+  filter(ind == 2) %>% 
+  pull(pesos) %>% 
+  qqline(col = "blue")
+```
+
+Como a hipótese de normalidade foi rejeitada para o segundo nível, não é necessário verificar se, para o terceiro nível, a hipótese de normalidade será ou não rejeitada. Com essa configuração, ao nível de significância estatística de 5%, a hipótese de normalidade da ANOVA foi violada. Logo, será necessária uma abordagem não paramétrica para o experimento.
+
+#### Teste de Kruskal-Wallis
+
+Verificamos se os níveis representados, possuem a mesma distribuição (hipótese nula). O teste de Kruskal é uma extensão do teste de Wilcoxon, que será também utilizado na análise. O teste de Kruskal-Wallis é o análogo ao teste F utilizado na ANOVA com 1 fator. Enquanto a análise de variância depende da hipótese de que todas as populações em confronto são independentes e normalmente distribuídas, o teste de Kruskal-Wallis não coloca nenhuma restrição sobre a comparação. Suponha que os dados provenham de k amostras aleatórias independentes com tamanhos amostrais $n_1, n_2, \dots, n_k$ sendo $N = n_1 + n_2 + \dots + n_k$ o número total de elementos considerados em todas as amostras.
+
+Considerando as seguintes hipóteses:
+
+$$\begin{cases}
+ H_{0}: \tau_1 = \tau_2 = \dots = \tau_n \\ 
+  H_{1}: \tau_1,\tau_2,\dots,\tau_n  \mbox{ pelo menos um difere} 
+\end{cases}$$
+
+Onde $\tau_i$ é o efeito do nível $i$ sobre a variável resposta.
+
+```{r}
+kruskal.test(pesos~ind, data = base)
+```
+
+com o p-valor muito abaixo do nível de significância, rejeita-se a hipótese nula (distribuições iguais) para o teste de Kruskal. Em seguida, realizam-se as comparações múltiplas com o teste de Wilcoxon, a fim de verificar para qual(is) pares de grupos há diferença de distribuições. 
+
+#### Comparações múltiplas
+
+A seguir, as hipóteses a serem testadas serão:
+$$\begin{cases}
+ H_{0}: \mbox{A distribuição dos dois grupos é a mesma}
+  H_{1}: \mbox{A distribuição dos dois grupos é diferente} 
+\end{cases}$$
+
+Também será necessário ajustar o nível de significância, a fim de que a probabilidade de cometer o erro do tipo I nas comparações múltiplas não se descontrole. Então $\alpha^* = \frac{\alpha}{\mbox{número de comparações}} = \frac{0.05}{3} \approx 0.0167$.
+
+Comparando o **nível 1** (sem agrotóxico)  e o **nível 2** (metade da dose aplicada):
+
+```{r}
+wilcox.test(base$pesos[base$ind == 1], base$pesos[base$ind == 2])
+```
+
+Nota-se que as distribuições não diferem.
+
+Comparando o **nível 1** (sem agrotóxico)  e o **nível 3** (dose total aplicada):
+
+```{r}
+wilcox.test(base$pesos[base$ind == 1], base$pesos[base$ind == 3])
+```
+
+Neste teste, conclui-se que as distribuições diferem.
+
+
+Comparando o **nível 2** (metade da dose aplicada)  e o **nível 3** (dose total aplicada):
+
+```{r}
+wilcox.test(base$pesos[base$ind == 2], base$pesos[base$ind == 3])
+```
+
+Conclui-se que as distribuições diferem.
+
+## Conclusão
+
+
+Como havia sido já observado na análise descritiva, existe diferença significativa entre os grupos 1 e 3 e entre 2 e 3. Logo, pode-se dizer que há diferença significativa do peso das laranjas com dose atualmente aplicada de agrotóxicos, em relação às laranjas sem agrotóxicos e com a metade da dose atualmente aplicada. Embora o não uso de agrotóxicos possa deixar de trazer malefícios à saúde, esta prática resulta num menor peso das frutas produzidas.
