@@ -41,9 +41,6 @@ ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
   geom_point()
 
 
-
-
-
 #no grafico, percebemos que o servico 3 tem o menor tempo de entrega dentre todos e que o servico 
 # 1 tem o pior tempo. E podemos perceber uma indicacao de que as diferencas entre os servicos 
 # variam para as quatro filiais e podemos esperar que a interacao seja significativa no modelo
@@ -63,6 +60,8 @@ bartlett.test(tempo~Destino, data = delivery.df)
 
 
 # Considerando alfa = 5%
+
+
 
 
 delivery.mod1 = aov(tempo ~ Destino+Transp, data = delivery.df)

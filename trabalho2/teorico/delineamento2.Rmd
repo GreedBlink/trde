@@ -43,6 +43,9 @@ Nessa metogologia, estamos considerando o uso de blocos aleatorizados buscando o
 
 ### Dados
 
+
+definir a justificativa do pq estamos dividindo em filias 
+
 Ao realizar os serviços de entrega e recolher as informações de tempo de entrega, foram observados os seguintes resultados:
 
 ```{r echo = F, message=F, warning=FALSE}
