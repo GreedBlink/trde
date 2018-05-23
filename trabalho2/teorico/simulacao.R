@@ -1,69 +1,98 @@
 #http://www.wekaleamstudios.co.uk/posts/two-way-analysis-of-variance-anova/
 #https://www.r-bloggers.com/design-of-experiments-%E2%80%93-block-designs/
+#http://www.r-tutor.com/elementary-statistics/analysis-variance/randomized-block-design
 # Simulacao 2 -------------------------------------------------------------
 if(require(pacman)){
-  p_load(ggplot2,tidyverse)
+  p_load(ggplot2, tidyverse, data.table)
 }else{
   install.packages("pacman")
-  pacman::p_load(ggplot2,tidyverse)
+  pacman::p_load(ggplot2, tidyverse, data.table)
 }
 
+set.seed(1)
+
 delivery.df = tibble(
-  Service = c(rep("Pacote 1", 15), rep("Pacote 2", 15),
-              rep("Pacote 3", 15), rep("Pacote 4",15)),
+  Transp = c(rep("Serviço 1", 30), rep("Serviço 2", 30),
+              rep("Serviço 3", 30), rep("Serviço 4",30)),
   Destino = c(rep(c("Filial 1", "Filial 2", "Filial 3",
-                    "Filial 4", "Filial 5","Filial 6"),10)),
-  Time = c(15.23, 14.32, 14.77, 15.12, 14.05,
-           15.48, 14.13, 14.46, 15.62, 14.23, 15.19, 14.67, 14.48, 15.34, 14.22,
-           16.66, 16.27, 16.35, 16.93, 15.05, 16.98, 16.43, 15.95, 16.73, 15.62,
-           16.53, 16.26, 15.69, 16.97, 15.37, 17.12, 16.65, 15.73, 17.77, 15.52,
-           16.15, 16.86, 15.18, 17.96, 15.26, 16.36, 16.44, 14.82, 17.62, 15.04,
-           16.98, 16.93, 15.48, 17.12, 16.65, 15.73, 15.95, 17.96, 16.36, 14.05,
-           16.43, 15.95, 16.73, 15.62, 16.53)
-)
+                    "Filial 4"),30))
+) %>% 
+  arrange(Transp, Destino)
+
+media_glob <- 5
+
+nvl_1 <- round(rnorm(30, 2.5, 0.25), 2)
+nvl_2 <- round(rnorm(30, 0, 0.25), 2)
+nvl_3 <- round(rnorm(30, -1.5, 0.25), 2)
+nvl_4 <- round(rnorm(30, 0, 0.25), 2)
+
+tempos <- c(nvl_1, nvl_2, nvl_3, nvl_4)
+
+delivery.df$tempo <- tempos
+
+delivery.df <- data.table(delivery.df)
+
+delivery.df[Destino %in% c("Filial 1", "Filial 2"), tempo := tempo + rnorm(60, 0.5, 0.1)]
+delivery.df[Destino %in% c("Filial 3", "Filial 4"), tempo := tempo + rnorm(60, 1, 0.15)]
+
+count(delivery.df, Destino)
+count(delivery.df, Transp)
+
+ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
+  geom_point()
 
 
-ggplot(delivery.df, aes(Time, Destino, colour = Service)) + geom_point()
-
-
-delivery.mod1 = aov(Time ~ Destino*Service, data = delivery.df)
+delivery.mod1 = aov(tempo ~ Destino+Transp, data = delivery.df)
 summary(delivery.mod1)
-
-
 
 delivery.res = delivery.df
 delivery.res$M1.Fit = fitted(delivery.mod1)
 delivery.res$M1.Resid = resid(delivery.mod1)
 
-ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Service)) + geom_point() +
+ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Transp)) + 
+  geom_point() +
   xlab("Fitted Values") + ylab("Residuals")
 
-ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Service)) +
-  geom_point() + xlab("Fitted Values") + ylab("Residuals") +
+ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Transp)) +
+  geom_point() + 
+  xlab("Fitted Values") + 
+  ylab("Residuals") +
   facet_wrap( ~ Destino)
 
-ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Service)) + geom_point() +
-  xlab("Fitted Values") + ylab("Residuals")
+ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Transp)) +
+  geom_point() +
+  xlab("Fitted Values") + 
+  ylab("Residuals")
 
-ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Service)) +
-  geom_point() + xlab("Fitted Values") + ylab("Residuals") +
+ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Transp)) +
+  geom_point() + 
+  xlab("Fitted Values") + 
+  ylab("Residuals") +
   facet_wrap( ~ Destino)
 
-ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Destination)) +
-  geom_point() + xlab("Fitted Values") + ylab("Residuals") +
-  facet_wrap( ~ Service)
+ggplot(delivery.res, aes(M1.Fit, M1.Resid, colour = Destino)) +
+  geom_point() + 
+  xlab("Fitted Values") + 
+  ylab("Residuals") +
+  facet_wrap( ~ Transp)
 
 
-ggplot(delivery.res, aes(sample = M1.Resid)) + stat_qq()
+ggplot(delivery.res, aes(sample = M1.Resid)) + 
+  stat_qq()
 
-TukeyHSD(delivery.mod1, which = "Service")
+hist(delivery.res$M1.Resid, prob = T)
+curve(dnorm(x, mean(delivery.res$M1.Resid), 
+            sd(delivery.res$M1.Resid)), add= T)
+
+TukeyHSD(delivery.mod1, which = "Transp")
 
 
-delivery.hsd = data.frame(TukeyHSD(delivery.mod1, which = "Service")$Service)
+delivery.hsd = data.frame(TukeyHSD(delivery.mod1, which = "Transp")$Transp)
 delivery.hsd$Comparison = row.names(delivery.hsd)
 
 
 ggplot(delivery.hsd, aes(Comparison, y = diff, ymin = lwr, ymax = upr)) +
-  geom_pointrange() + ylab("Difference in Mean Delivery Time by Service") +
+  geom_pointrange() + 
+  ylab("Difference in Mean Delivery Time by Service") +
   coord_flip()
 
