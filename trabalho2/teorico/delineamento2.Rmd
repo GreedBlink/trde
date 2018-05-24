@@ -11,7 +11,7 @@ output:
 
 ## Introdução
 
-Cosiderando uma empresa que regularmente tem que enviar encomendas entre suas várias filiais e tem a opção de usar três serviços concorrentes de entrega de encomendas, os quais cobram valores semelhantes para cada entrega. Nesta situação é razoável que se escolha a transportadora que entregue as encomendas com o menor tempo.
+Cosidere uma empresa que regularmente tem que enviar encomendas entre suas 4 filiais e tem a opção de usar três serviços concorrentes de entrega de encomendas, os quais cobram valores semelhantes para realizar a entrega. Nesta situação é razoável que se escolha a transportadora que entregue as encomendas com o menor tempo.
 
 ## Objetivos
   
@@ -20,6 +20,8 @@ Determinar qual serviço de entrega usar, baseando-se no tempo de entrega das en
 ## Metodologia 
 
 Propomos um experimento enviando pacotes da matriz da empresa para cada um das quatro filiais, utilizando 4 serviços de transportadora, contabilizando o tempo de entrega de cada pacote. 
+
+O experimento foi realizado utilizando a divisão de filiais como blocos, já que o serviço de entregas a ser contratado será utilizado para que todas as 4 filiais recebam encomendas. O fato de as 4 filiais estarem localizadas em regiões geográficas diferentes exige a divisão em blocos para que obtenha-se resultado com menor chance de erro.
 
   - Unidade experimental: efetuar a entrega dos pacotes .
   - Variável resposta: Tempo de entrega (em horas).
