@@ -32,6 +32,8 @@ delivery.df <- data.table(delivery.df)
 delivery.df[Destino %in% c("Filial 1", "Filial 2"), tempo := tempo + rnorm(60, 0.5, 0.1)]
 delivery.df[Destino %in% c("Filial 3", "Filial 4"), tempo := tempo + rnorm(60, 1, 0.15)]
 
+#### Análise ####
+
 count(delivery.df, Destino)
 count(delivery.df, Transp)
 
