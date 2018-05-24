@@ -34,28 +34,47 @@ delivery.df[Destino %in% c("Filial 3", "Filial 4"), tempo := tempo + rnorm(60, 1
 
 #### Análise ####
 
+# Verificando número de observações por bloco
 count(delivery.df, Destino)
-count(delivery.df, Transp)
 
-# No grafico de dispersao podemos tentar verificar alguma tendencia nos tempos de entrega
-
-ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
-  geom_point()
-
-
-
-
+# Verificando tempos por blocos
 delivery.df %>%
   ggplot(aes(x = Destino, y = tempo)) + 
   geom_boxplot(fill = "steelblue") + 
   theme_bw() + 
-  labs(x = "Filial", y = "Tempo de entrega para cada filial") + 
+  labs(x = "Filial", y = "Tempo de entrega (em horas)",
+       title = "Tempo de entrega por filiais") + 
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15))
+# Neste gráfico podemos verificar se os blocos propostos
+# (filiais) levam a uma diferença no tempo de entrega.
+# As distribuições são diferentes, então vamos considerar
+# os blocos na ANOVA.
+
+# De qualquer forma, como temos um dataset bem pequeno
+# não haverá problema de memória ou desempenho
+# ao rodar a anova dessa maneira
+
+# No gráfico de dispersão podemos tentar verificar alguma 
+# diferença entre os tempos de entrega
+
+ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
+  geom_point() + 
+  labs(y = "Tempo (horas)",
+       title = "Tempo de entrega de pacotes para filiais por transportadora") + 
+  scale_color_discrete(name = "Serviço de \ntransportadora")
+
+# Neste gráfico fica claro que o serviço 1 apresenta
+# um serviço de entrega mais lento. 
+# Por outro lado, o serviço 3 apresenta entregas muito rápidas,
+# com as entregas realizadas em menos de uma hora.
+# Já os serviços 2 e 4 apresentam tempos 
+# parecidos de entrega.
 
 
-#no grafico, percebemos que o servico 3 tem o menor tempo de entrega dentre todos e que o servico 
-# 1 tem o pior tempo. E podemos perceber uma indicacao de que as diferencas entre os servicos 
-# variam para as quatro filiais e podemos esperar que a interacao seja significativa no modelo
+# Neste gráfico podemos perceber uma indicacao de que as 
+# diferencas entre os servicos variam, mesmo que
+# suavemente, observando que a filial 3 recebe pacotes
+# com tempos ligeiramente superiores.
 # ANOVA.
 
 
