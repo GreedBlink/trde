@@ -18,10 +18,10 @@ delivery.df = tibble(
 
 media_glob <- 5
 
-nvl_1 <- round(rnorm(30, 2.5, 0.25), 2)
-nvl_2 <- round(rnorm(30, 0, 0.25), 2)
-nvl_3 <- round(rnorm(30, -1.5, 0.25), 2)
-nvl_4 <- round(rnorm(30, 0, 0.25), 2)
+nvl_1 <- media_glob + round(rnorm(30, 2.5, 0.25), 2)
+nvl_2 <- media_glob + round(rnorm(30, 0, 0.25), 2)
+nvl_3 <- media_glob + round(rnorm(30, -0.5, 0.25), 2)
+nvl_4 <- media_glob + round(rnorm(30, 0, 0.25), 2)
 
 tempos <- c(nvl_1, nvl_2, nvl_3, nvl_4)
 
@@ -69,16 +69,33 @@ ggplot(delivery.df, aes(Destino, tempo, colour = Transp)) +
 # com as entregas realizadas em menos de uma hora.
 # Já os serviços 2 e 4 apresentam tempos 
 # parecidos de entrega.
-
-
-# Neste gráfico podemos perceber uma indicacao de que as 
+# Podemos perceber uma indicacao de que as 
 # diferencas entre os servicos variam, mesmo que
 # suavemente, observando que a filial 3 recebe pacotes
 # com tempos ligeiramente superiores.
-# ANOVA.
 
+delivery.df %>%
+  ggplot(aes(x = Transp, y = tempo)) + 
+  geom_boxplot(fill = "steelblue") + 
+  theme_bw() + 
+  labs(x = "Serviço de transportadora", 
+       y = "Tempo de entrega (em horas)",
+       title = "Tempo de entrega por transportadora") + 
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))
+# Com este gráfico fica clara a diferença de tempos de entrega
+# por transportadora. A conclusão confirma o que foi 
+# observado no gráfico de pontos acima. O serviço 3 tem os
+# menores tempos, os serviços 2 e 4 são equivalentes, 
+# com relação ao tempo de entrega, e o serviço 1
+# apresenta tempos de entrega superiores.
+
+delivery.df %>% 
+  group_by(Transp) %>% 
+  summarise(tempo_medio = mean(tempo))
 
 # Para todos os testes: alfa = 5%
+
+
 
 delivery.df %>% 
   filter(Transp == "Serviço 1") %>% 
