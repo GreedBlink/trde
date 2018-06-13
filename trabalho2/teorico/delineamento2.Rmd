@@ -1,17 +1,14 @@
 ---
-title: "Delineamento de Experimentos - em Blocos"
+title: "Delineamento de Experimentos em Blocos"
 subtitle: "Serviços de entrega"
 author:  "Jonatha Azevedo/Leonardo Filgueira"
 date: "`r format(Sys.Date(),'%d de %B de %Y')`"
-output:
-  prettydoc::html_pretty:
-    theme: cayman
-    highlight: github
+output: word_document
 ---
 
 ## Introdução
 
-Cosidere uma empresa que regularmente tem que enviar encomendas entre suas 4 filiais e tem a opção de usar três serviços concorrentes de entrega de encomendas, os quais cobram valores semelhantes para realizar a entrega. Nesta situação é razoável que se escolha a transportadora que entregue as encomendas com o menor tempo.
+Cosidere uma empresa que regularmente tem que enviar encomendas entre suas 4 filiais e tem a opção de usar quatro serviços concorrentes de entrega de encomendas, os quais cobram valores semelhantes para realizar a entrega. Nesta situação é razoável que se escolha a transportadora que entregue as encomendas com o menor tempo.
 
 ## Objetivos
   
@@ -28,7 +25,7 @@ O experimento foi realizado utilizando a divisão de filiais como blocos, já qu
   - Tratamentos em comparação: Transportadoras.
   - Blocos: Filiais
   - Designação dos tratamentos: por sorteio.
-  - Número de repetições: 30 encomendas por filial.
+  - Número de repetições: 30 encomendas por filial e por bloco.
 
 Nessa metogologia, estamos considerando o uso de blocos aleatorizados buscando obter o máximo de homogeneidade dentro dos grupos e heterogeneidade entre os grupos.
 
@@ -45,37 +42,43 @@ Nessa metogologia, estamos considerando o uso de blocos aleatorizados buscando o
 
 ### Dados
 
-Ao realizar os serviços de entrega e recolher as informações de tempo de entrega, foram observados os seguintes resultados:
+Após a obtenção dos dados, estes foram armazenados numa tabela, cujas primeiras linhas são mostradas a seguir: 
 
-```{r echo = F, message=F, warning=FALSE}
-require(dplyr)
-require(data.table)
+```{r echo = F, warning=F, message=F}
+if(require(pacman)){
+  p_load(ggplot2, tidyverse, data.table)
+}else{
+  install.packages("pacman")
+  pacman::p_load(ggplot2, tidyverse, data.table)
+}
 
 set.seed(1)
 
-delivery.df = tibble(
-  Transportadora = c(rep("Serviço 1", 30), rep("Serviço 2", 30),
-              rep("Serviço 3", 30), rep("Serviço 4",30)),
+delivery_df = tibble(
+  Transp = c(rep("Serviço 1", 30*4), rep("Serviço 2", 30*4),
+              rep("Serviço 3", 30*4), rep("Serviço 4",30*4)),
   Destino = c(rep(c("Filial 1", "Filial 2", "Filial 3",
-                    "Filial 4"),30))
+                    "Filial 4"), 30*4))
 ) %>% 
-  arrange(Transportadora, Destino)
+  arrange(Transp, Destino)
 
 media_glob <- 5
 
-nvl_1 <- media_glob + round(rnorm(30, 2.5, 0.25), 2)
-nvl_2 <- media_glob + round(rnorm(30, 0, 0.25), 2)
-nvl_3 <- media_glob + round(rnorm(30, -1.5, 0.25), 2)
-nvl_4 <- media_glob + round(rnorm(30, 0, 0.25), 2)
+nvl_1 <- media_glob + round(rnorm(120, 2.5, 0.25), 2)
+nvl_2 <- media_glob + round(rnorm(120, 0, 0.25), 2)
+nvl_3 <- media_glob + round(rnorm(120, -0.5, 0.25), 2)
+nvl_4 <- media_glob + round(rnorm(120, 0, 0.25), 2)
 
 tempos <- c(nvl_1, nvl_2, nvl_3, nvl_4)
 
-delivery.df$Tempo <- tempos
+delivery_df$tempo <- tempos
 
-delivery.df <- data.table(delivery.df)
+delivery_df <- data.table(delivery_df)
 
-delivery.df[Destino %in% c("Filial 1", "Filial 2"), Tempo := Tempo + round(rnorm(60, 0.5, 0.1), 2)]
-delivery.df[Destino %in% c("Filial 3", "Filial 4"), Tempo := Tempo + round(rnorm(60, 1, 0.15), 2)]
+delivery_df[Destino %in% c("Filial 1", "Filial 2"), tempo := tempo + rnorm(60, 0.5, 0.1)]
+delivery_df[Destino %in% c("Filial 3", "Filial 4"), tempo := tempo + rnorm(60, 1, 0.15)]
 
-DT::datatable(delivery.df, rownames = F)
+knitr::kable(head(delivery_df), row.names = F, 
+              col.names = c("Transportadora", "Filial", "Tempo (em horas)"))
 ```
+
