@@ -1,4 +1,4 @@
-# trabalho 3
+# trabalho 3 - Jonatha Azevedo e Leonardo Filgueira
 # delineamento em quadrados latinos
 
 # Experimento: Comparar a produção de 8 variedades de cana-de-açúcar.
@@ -7,11 +7,8 @@
 # de modo a obter uma planta por célula (linha, coluna).
 
 # Unidade experimental: cana de acucar
-# Variável resposta: 
-# Níveis: variedades
-# Blocos: 
-# Número de blocos: 8
-# Repetições por fator: 8
+# Variável resposta: peso da producao
+# Níveis: variedades da cana de acucar
 
 require(dplyr)
 require(tidyr)
@@ -85,4 +82,115 @@ dados %>%
 
 # Ajustando o modelo ------------------------------------------------------
 
-mod <- aov()
+# H_0: mi = mj , para todo i != j , i,j = 1,2,....,8 (variedades da cana)
+# H_1: pelo menos um par diferente 
+
+# nivel de significancia adotado: 5%
+
+mod <- aov(peso ~ variedade + linha + coluna ,data = dados)
+anova(mod)
+
+
+# Análise dos resíduos ------------------------------------------------
+
+par(mfrow=c(2,2))
+plot(mod)
+
+
+# Homocedasticidade, Normalidade e Independência --------------------------
+
+residuos <- (mod$residuals)
+
+par(mfrow=c(2,2))
+
+names(residuos) <- NULL
+
+# grafico dos residuos pelos pesos
+
+plot(dados$peso,residuos)
+title("Resíduos vs pesos \n Homocedasticidade")
+
+preditos <- (mod$fitted.values)
+
+# grafico dos residuos pelos pesos 
+
+plot(residuos,preditos)
+title("Resíduos vs pesos \n Independência")
+
+qqnorm(residuos,ylab="Residuos", main=NULL)
+qqline(residuos,col  = 2)
+title("Grafico Normal de \n Probabilidade dos Resíduos")
+
+# outra forma de verificar a normalidade graficamente
+
+hist(residuos,prob = T)
+curve(dnorm(x,mean(residuos),sd(residuos)),add = T,col = 2)
+par(mfrow=c(2,1))
+
+
+# analizando os graficos, podemos verificar que os residuos parecem ser 
+# normalmente distribuidos
+
+# Teste de normalidade - shapiro ------------------------------------------
+
+# H_0:  os dados seguem uma distribuicao de probabildiade normal
+# H_1: os dados nao seguem uma distribuicao de probabildiade normal
+
+# nivel de significancia adotado: 5%
+shapiro.test(residuos)
+
+# com o p-valor > 0.05 , nao rejeitamos a hipotose de normalidade nos residuos 
+
+# padronizando e buscando outliers nos residuos
+
+respad <- (residuos/sqrt(anova(mod)$"Mean Sq"[4]))
+boxplot(respad)
+title("Resíduos Padronizados - outliers")
+
+outlier<-c(max(respad),min(respad))
+outlier
+
+
+
+# Teste para Comparações Múltiplas ----------------------------------------
+
+
+
+compMult <- TukeyHSD(mod, "variedade", ord=T)
+compMult
+plot(compMult)
+
+# hipoteses do teste HSD de Tukey
+
+
+# H_0: mu_i = mu_j , i != j
+# H_1: mu_i != mu_j
+
+# nivel de significancia adotado: 5%
+
+aux <- as.data.frame(compMult$variedade) %>% 
+  tibble::rownames_to_column("dupla")
+
+aux  %>% 
+ select(pvalor = 5, everything()) %>%  
+    filter(pvalor > .05) 
+
+# Podemos ver que nao rejitamos a hipotese nula para os pares de tratamento
+# F-G e H-D. Isso siginigica que para todas as outras combinacoes de 
+# variedades de cana de acucar, existe diferenca significativa no peso da 
+# producao. 
+
+duplas <- aux %>% filter(lwr > 0 , upr > 0) %>% 
+    mutate(dupals_split = stringr::str_split(dupla,pattern = "-"))
+
+k <- duplas$dupals_split
+
+# os tratamentos da direita afetam o peso da produacao pra cima e os
+# tratamentos da esquerda afetam o peso da producao pra baixo. 
+
+# Conclusao ---------------------------------------------------------------
+
+# Foi importante usar o delineamento por quadrado latino pois verificamos efeito da linha e da coluna 
+# (o conjunto de terra onde foi plantado a cana) sobre o peso da produção de cana de acucar, como 
+#indica o resultado da analise de variancia. 
+
