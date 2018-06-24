@@ -1,0 +1,10 @@
+---
+title: "Delineamento de Experimentos"
+subtitle: ""
+author:  "Jonatha Azevedo/Leonardo Filgueira"
+date: "`r format(Sys.Date(),'%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
