@@ -1,18 +1,23 @@
-# trabalho 3 - Jonatha Azevedo e Leonardo Filgueira
-# delineamento em quadrados latinos
+# Trabalho 3 - Jonatha Azevedo e Leonardo Filgueira
+
+# Delineamento em quadrados latinos
 
 # Experimento: Comparar a produção de 8 variedades de cana-de-açúcar.
 # A fim de controlar o efeito de fertilidade do solo, foi utilizado
-# o delineamento em blocos, dividindo a área em linhas em colunas,
-# de modo a obter uma planta por célula (linha, coluna).
+# o delineamento em quadrados latinos, dividindo a área em linhas em colunas,
+# de modo a obter uma planta por quadrado (linha, coluna).
 
 # Unidade experimental: cana de acucar
 # Variável resposta: peso da producao
-# Níveis: variedades da cana de acucar
+# Fator: variedades da cana de acucar
+# Níveis: A, B, C, D, E, F, G, H
 
 require(dplyr)
 require(tidyr)
 require(ggplot2)
+
+
+# Simulação ---------------------------------------------------------------
 
 set.seed(1)
 
@@ -69,41 +74,53 @@ dados <- dados %>%
 dados %>% 
   ggplot(aes(x = variedade, y = peso)) + 
   geom_boxplot()
+# Podemos perceber que as diferentes variedades apresentam diferentes 
+# distribuições de peso da produção
 
 dados %>% 
   ggplot(aes(x = coluna, y = peso)) + 
   geom_boxplot()
+# Percebemos que as colunas dos quadrados parecem interferir na produção
 
 dados %>% 
   ggplot(aes(x = linha, y = peso)) + 
   geom_boxplot()
-
+# Assim também as linhas dos quarados parecem interferir no peso produzido.
 
 
 # Ajustando o modelo ------------------------------------------------------
+
+#Modelo:
+# Y_(i,j)[k] = mu + L_i + C_j + tau_k + erro_(i,j)[k]
+# Onde Y_(i,j)[k] é o valor da variável resposta na i-ésima linha,
+# j-ésima coluna, sob o efeito do nível k do fator.
+# mu é a média geral, L_i é o efeito da i-ésima linha,
+# C_j é o efeito da j-ésima coluna,
+# tau_k é o efeito do k-ésimo nível do fator e 
+# erro_(i,j)[k] é o erro aleatório, sendo erro_(i,j)[k] ~ N(0, sigma^2)
 
 # H_0: mi = mj , para todo i != j , i,j = 1,2,....,8 (variedades da cana)
 # H_1: pelo menos um par diferente 
 
 # nivel de significancia adotado: 5%
 
-mod <- aov(peso ~ variedade + linha + coluna ,data = dados)
+mod <- aov(peso ~ variedade + linha + coluna, data = dados)
 anova(mod)
 
+# Como o p-valor é menor que o nível de significância, temos evidências 
+# estatísticas para rejeitar H_0. Além disso, percebemos que a 
+# região onde a cana foi plantada também infuencia na produção.
 
 # Análise dos resíduos ------------------------------------------------
 
 par(mfrow=c(2,2))
 plot(mod)
 
-
 # Homocedasticidade, Normalidade e Independência --------------------------
 
 residuos <- (mod$residuals)
 
 par(mfrow=c(2,2))
-
-names(residuos) <- NULL
 
 # grafico dos residuos pelos pesos
 
@@ -119,7 +136,7 @@ title("Resíduos vs pesos \n Independência")
 
 qqnorm(residuos,ylab="Residuos", main=NULL)
 qqline(residuos,col  = 2)
-title("Grafico Normal de \n Probabilidade dos Resíduos")
+title("Qqplot dos resíduos")
 
 # outra forma de verificar a normalidade graficamente
 
@@ -129,12 +146,12 @@ par(mfrow=c(2,1))
 
 
 # analizando os graficos, podemos verificar que os residuos parecem ser 
-# normalmente distribuidos
+# normalmente distribuidos e independentes
 
 # Teste de normalidade - shapiro ------------------------------------------
 
-# H_0:  os dados seguem uma distribuicao de probabildiade normal
-# H_1: os dados nao seguem uma distribuicao de probabildiade normal
+# H_0:  os dados vêm de uma população com distribuicao normal
+# H_1: os dados nao vêm de uma população com distribuicao normal
 
 # nivel de significancia adotado: 5%
 shapiro.test(residuos)
@@ -142,55 +159,56 @@ shapiro.test(residuos)
 # com o p-valor > 0.05 , nao rejeitamos a hipotose de normalidade nos residuos 
 
 # padronizando e buscando outliers nos residuos
-
+dev.off()
 respad <- (residuos/sqrt(anova(mod)$"Mean Sq"[4]))
 boxplot(respad)
-title("Resíduos Padronizados - outliers")
+title("Resíduos Padronizados")
 
 outlier<-c(max(respad),min(respad))
 outlier
 
 
-
 # Teste para Comparações Múltiplas ----------------------------------------
 
-
-
-compMult <- TukeyHSD(mod, "variedade", ord=T)
-compMult
-plot(compMult)
-
-# hipoteses do teste HSD de Tukey
-
-
+# Hipoteses do teste HSD de Tukey
 # H_0: mu_i = mu_j , i != j
 # H_1: mu_i != mu_j
 
-# nivel de significancia adotado: 5%
+# Nível de significância ajustado: 5%/28 = 0.001785714
+
+compMult <- TukeyHSD(mod, "variedade", ord = T)
+compMult
+plot(compMult) # Como há muitas comparações, o gráfico acaba não sendo
+# tão informativo
 
 aux <- as.data.frame(compMult$variedade) %>% 
   tibble::rownames_to_column("dupla")
 
 aux  %>% 
- select(pvalor = 5, everything()) %>%  
+ select(dupla, pvalor = 5, everything()) %>%  
     filter(pvalor > .05) 
 
 # Podemos ver que nao rejitamos a hipotese nula para os pares de tratamento
 # F-G e H-D. Isso siginigica que para todas as outras combinacoes de 
 # variedades de cana de acucar, existe diferenca significativa no peso da 
-# producao. 
+# producao. Já entre as variedades F e G e entre as variedades H e D não 
+# existe diferença significativa no peso da produção.
 
-duplas <- aux %>% filter(lwr > 0 , upr > 0) %>% 
-    mutate(dupals_split = stringr::str_split(dupla,pattern = "-"))
+duplas <- aux %>%
+  filter(lwr > 0 , upr > 0) %>% 
+  mutate(duplas_split = stringr::str_split(dupla,pattern = "-"))
 
-k <- duplas$dupals_split
+k <- duplas$duplas_split
 
-# os tratamentos da direita afetam o peso da produacao pra cima e os
-# tratamentos da esquerda afetam o peso da producao pra baixo. 
+# os tratamentos da esquerda afetam o peso da producao de maneira que
+# o peso é maior que o peso da producao dos da direita
 
 # Conclusao ---------------------------------------------------------------
 
 # Foi importante usar o delineamento por quadrado latino pois verificamos efeito da linha e da coluna 
 # (o conjunto de terra onde foi plantado a cana) sobre o peso da produção de cana de acucar, como 
-#indica o resultado da analise de variancia. 
+# indica o resultado da analise de variancia. 
 
+# Por fim, podemos concluir que diferentes variedades de cana de acucar
+# levam a diferentes pesos da produção, com exceção da comparação entre
+# as variedades F-G e entre as variedades H-D.
