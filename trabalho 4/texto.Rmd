@@ -25,7 +25,7 @@ Esse trabalho tem como finalidade a elaboração contextual, simulação, análi
       - C, 4 níveis
 
   - Aplicanto os seguintes efeitos de interação: 
-      -  A e C (em 6 dos tratamentos)
+      - A e C (em 6 dos tratamentos)
       - Sem efeito do fator B
       
       
@@ -79,12 +79,61 @@ dados <- as_tibble(dados)
 
 ```
 
+
+
+
 ```{r}
 
 dados$resp = ifelse(dados$Recip == "R1", dados$resp + 0.03, dados$resp + 1.2)
 dados$resp = ifelse(dados$irrig == 1, dados$resp - 1.5, dados$resp + 1.5)
 DT::datatable(dados, rownames = F)
 ```
+
+
+Considerando o seguinte modelo matemático, temos:
+
+$$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\phi)_{jk} + (\tau\phi)_{ik} + \epsilon_{lijk}$$
+
+ onde $(\tau\phi)_{ik}$ = 0, para todo i,k.
+ 
+ Com o nível de significância de 5%, temos
+ 
+
+## Análise descritiva
+
+```{r}
+summary(dados)
+
+#(médias.trat = with(dados, tapply(resp, trat, mean)))
+(médias.rec = with(dados, tapply(resp, Recip, mean)))
+(médias.esp = with(dados, tapply(resp, Espec, mean)))
+
+(médias = with(dados, tapply(resp, list(Recip, Espec), mean)))
+(variâncias = with(dados, tapply(resp, list(Recip, Espec), var)))
+(desvios = with(dados, tapply(resp, list(Recip, Espec), sd)))
+
+```
+
+
+
+```{r}
+# Gráfico de caixas
+par(mfrow=c(2,2))
+
+# Espécies
+with(dados, boxplot(resp ~ Espec, names=c("E1", "E2","E3","E4"), ylab="Alturas (cm)", 
+                    xlab="Espécies", las=1, col='LightYellow'))
+points(médias.esp, pch="+", col=2, cex=1.5)
+# Recipientes
+with(dados, boxplot(resp ~ Recip, names=c("R1", "R2", "R3"), ylab="Alturas (cm)", 
+                    xlab="Recipientes", las=1, col='LightYellow'))
+# Irrigacao
+with(dados, boxplot(resp ~ irrig, names=c("1","2"), ylab="Alturas (cm)", 
+                    xlab="Recipientes", las=1, col='LightYellow'))
+
+points(médias.rec, pch="+", col=2, cex=1.5)
+```
+
 
 
 

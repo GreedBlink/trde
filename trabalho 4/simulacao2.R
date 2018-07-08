@@ -6,8 +6,10 @@
 # é apresentado livro de Banzatto & Kronka (1995), página 132.   -
 #-----------------------------------------------------------------
 rm(list=ls())
-
+require(dplyr)
 (croqui = expand.grid(rep=1:4, Espec=c("E1","E2"), Recip=c("R1","R2",'R3')))
+
+alturas <- format(rnorm(n = 24,mean = 22,sd = 1.8),digits = 3) %>% as.numeric()
 
 alturas = c(26.2, 26.0, 25.0, 25.4, 
             24.8, 24.6, 26.7, 25.2,
