@@ -44,6 +44,8 @@ Modelando na estrutura apresentada, segue:
     - **Luvas do agricultor**: Agicultor usava luva de borracha; agricultor não usava luva.
     - **Espécies**: e1 (*citriodora*), e2 (*maculata*), e3 (*maidenii*) e e4 (*paniculata*)
 
+As mudas foram medidas 10 anos após seu plantio, tempo suficiente para atingir sua altura comum.
+
 De acordo com NISHIJIMA, Toshio et al. em FREQÜÊNCIAS DE IRRIGAÇÃO PARA Eucalyptus grandis E Pinus elliottii em viveiro, o número ideal de irrigações por dia é de 3 vezes, com uma irrigação de 5 litros por minuto. Então os níveis deste fator foram escolhidas de maneira a seguir o resultado do estudo mencionado.
 
 As luvas de borracha são muito recomendadas, como um Equipamento de Proteção Individual, mas não interferem na altura das árvores.
@@ -90,6 +92,10 @@ dados <- as_tibble(dados)
 set.seed(234)
 
 require(dplyr)
+if(!require(agricolae)){ 
+  install.packages("agricolae", repos = 'http://cran.us.r-project.org')
+}
+require(agricolae)
 
 dados <- expand.grid(rep = 1:30, Espec = c("E1", "E2", "E3", "E4"), luva = c("Luva", "Sem Luva"), irrig = c(0, 3, 5), media = 40)
 
@@ -128,60 +134,125 @@ $$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\p
  onde $(\tau\phi)_{ik}$ = 0, para todo i,k.
  
 
-<!-- ## Análise descritiva -->
+## Análise descritiva
 
 ```{r}
 summary(dados)
 
-#(médias.trat = with(dados, tapply(resp, trat, mean)))
-(médias.rec = with(dados, tapply(resp, , mean)))
-(médias.esp = with(dados, tapply(resp, Espec, mean)))
+(medias_irrig = with(dados, tapply(Altura, irrig, mean)))
+(medias_luv = with(dados, tapply(Altura, luva, mean)))
+(medias_esp = with(dados, tapply(Altura, Espec, mean)))
 
-(médias = with(dados, tapply(resp, list(Recip, Espec), mean)))
-(variâncias = with(dados, tapply(resp, list(Recip, Espec), var)))
-(desvios = with(dados, tapply(resp, list(Recip, Espec), sd)))
+# (medias = with(dados, tapply(Altura, list(irrig, luva, Espec), mean)))
+# (variancias = with(dados, tapply(Altura, list(irrig, luva, Espec), var)))
+# (desvios = with(dados, tapply(Altura, list(irrig, luva, Espec), sd)))
 ```
 
+Podemos perceber que o valor da altura média varia de acordo com a quantidade de irrigação, sendo maior quando a muda é irrigada 3 vezes ao dia. Também podemos observar que a espécie 3 apresenta uma altura maior, em média. 
 
+```{r fig.width=10, fig.align='center'}
+# Boxplot
+par(mfrow = c(1, 2))
 
-<!-- ```{r} -->
-<!-- # Gráfico de caixas -->
-<!-- par(mfrow=c(2,2)) -->
+# Espécies
+with(dados, boxplot(Altura ~ Espec, names = c("E1", "E2","E3","E4"), ylab = "Altura (m)", xlab = "Espécies", las = 1, col = 'LightYellow', main = "Altura de eucaliptos \nde acordo com a espécie"))
 
-<!-- # Espécies -->
-<!-- with(dados, boxplot(resp ~ Espec, names=c("E1", "E2","E3","E4"), ylab="Alturas (cm)",  -->
-<!--                     xlab="Espécies", las=1, col='LightYellow')) -->
-<!-- points(médias.esp, pch="+", col=2, cex=1.5) -->
-<!-- # Recipientes -->
-<!-- with(dados, boxplot(resp ~ Recip, names=c("R1", "R2", "R3"), ylab="Alturas (cm)",  -->
-<!--                     xlab="Recipientes", las=1, col='LightYellow')) -->
-<!-- # Irrigacao -->
-<!-- with(dados, boxplot(resp ~ irrig, names=c("1","2"), ylab="Alturas (cm)",  -->
-<!--                     xlab="Recipientes", las=1, col='LightYellow')) -->
+points(medias_esp, pch = "+", col = 2, cex = 1.5)
+legend("topright", legend = "Altura média", pch = "+", col = 2, cex = 0.8, bty = "n")
 
-<!-- points(médias.rec, pch="+", col=2, cex=1.5) -->
-<!-- ``` -->
+# Irrigação
+with(dados, boxplot(Altura ~ irrig, names = c("R1", "R2", "R3"), ylab = "Altura (m)", xlab = "Quantidade de irrigações", las = 1, col = 'LightYellow', main = "Altura de eucaliptos \nde acordo com a irrigação", pch = 20))
 
+points(medias_irrig, pch = "+", col = 2, cex = 1.5)
+legend("topright", legend = "Altura média", pch = "+", col = 2, cex = 0.8, bty = "n")
+```
 
+Os gráficos indicam que a distribuição da altura muda de acordo com a espécie. Vemos as espécies 1 e 4 com uma ditribuição similar, a espécie 3 com uma distribuição de alturas maiores e a espécie 2 com menores alturas. 
 
-<!-- Em experimentos fatoriais é importante verificar se existe interação entre os fatores. Inicialmente vamos fazer isto graficamente e mais a frente faremos um teste formal para presença de interação.  -->
+Em experimentos fatoriais é importante verificar se existe interação entre os fatores. Inicialmente vamos fazer isto graficamente e mais a frente faremos um teste formal para presença de interação.
 
-<!-- ```{r,echo = F,fig.align='center'} -->
-<!-- par(mfrow= c(1,2)) -->
-<!-- with(dados, interaction.plot(Recip, Espec, resp, las=1, xlab='Recipientes', -->
-<!--                              ylab='Alturas médias (cm)', col=c('red','blue'),  -->
-<!--                              bty='l', trace.label=deparse(substitute(Espécies)),  -->
-<!--                              lwd=2.5)) -->
+```{r,echo = F,fig.align='center', fig.width=10}
+par(mfrow= c(1,2))
+with(dados, interaction.plot(irrig, Espec, Altura, las=1, xlab = 'Quantidade de irrigação', ylab = 'Alturas médias (m)', col = c('red', 'blue'), bty='l', trace.label = deparse(substitute(Espécies)), lwd = 2.5, main = "Interação entre quantidade de irrigação \ne espécies de eucalipto"))
 
-<!-- with(dados, interaction.plot(Espec, Recip, resp, las=1, xlab='Espécies', -->
-<!--                              ylab='resp médias (cm)', col=c('red','blue'),  -->
-<!--                              bty='l', trace.label=deparse(substitute(Recipientes)),  -->
-<!--                              lwd=2.5)) -->
-<!-- ``` -->
+with(dados, interaction.plot(Espec, irrig, Altura, las=1, xlab = 'Espécies', ylab='Alturas médias (m)', col = c('red', 'blue'), bty='l', trace.label = deparse(substitute(Irrigação)), lwd = 2.5, main = "Interação entre espécies de eucalipto \ne quantidade de irrigação"))
+```
 
+<!-- Interpretar que tem interação -->
 
+```{r,echo = F,fig.align='center', fig.width=10}
+par(mfrow= c(1,2))
+with(dados, interaction.plot(luva, Espec, Altura, las=1, xlab = 'Uso de luvas de borracha', ylab = 'Alturas médias (m)', col = c('red', 'blue'), bty='l', trace.label = deparse(substitute(Espécies)), lwd = 2.5, main = "Interação entre uso de luvas \ne espécies de eucalipto"))
 
-<!-- ## Análise dos resultados -->
-<!-- Com o nível de significância de 5%, temos -->
+with(dados, interaction.plot(Espec, luva, Altura, las=1, xlab = 'Espécies', ylab='Alturas médias (m)', col = c('red', 'blue'), bty='l', trace.label = deparse(substitute(`Uso de luvas`)), lwd = 2.5, main = "Interação entre espécies de eucalipto \ne uso de luvas"))
+```
 
+<!-- Interpretar que não tem interação -->
+
+## Análise inferencial
+
+### Anova completa
+
+A seguir, relações que foram sugeridas a partir da análise descritiva serão verificadas a partir de testes de hipóteses. Nosso objetivo é verificar se as espécies, o uso de luvas e a irrigação possuem relação com a altura das árvores, então iremos buscar aplicar uma ANOVA. Contudo, as suposições da análise de variância devem ser satisfeitas. Primeiramente, os níveis de todos os fatores são independentes, então esta primeira suposição está satisfeita. A seguir, verificaremos normalidade. Todos os testes de hipóteses serão aplicados sob um nível de significância de 5%.
+
+#### Teste de normalidade
+
+Hipóteses
+
+$$\begin{cases}
+ H_{0}: \mbox{A amostra provém de uma população com distribuição normal} \\ 
+  H_{1}: \mbox{A amostra não provém de uma população com distribuição normal} 
+\end{cases}$$
+
+A seguir temos a tabela com o p-valor do teste de Shapiro-Wilk de normalidade para a variável Altura do eucalipto, para cada combinação dos níveis dos fatores.
+
+```{r}
+normalidade <- dados %>%
+  group_by(Espec, luva, irrig) %>%
+  summarise(p_valor = round(shapiro.test(Altura)$p.value, 2))
+
+DT::datatable(normalidade)
+
+normalidade %>% 
+  filter(p_valor < 0.05)
+```
+
+Como pudemos perceber, sob um nível de significância de 5%, a hipótese de normalidade não foi rejeitada para nenhuma combinação de níveis dos fatores. Logo, podemos prosseguir, verificando homocedasticidade. Utilizaremos o teste de Bartlett, que tem as seguintes hipóteses:
+
+#### Teste de homocedasticidade
+
+$$\begin{cases}
+ H_{0}: \sigma^2_i = \sigma^2_j , \forall i \neq j \\ 
+  H_{1}: \mbox{Pelo menos um } \sigma^2_i \mbox{ é diferente}
+\end{cases}$$
+
+```{r}
+bartlett.test(Altura ~ interaction(Espec, luva, irrig), data = dados)
+```
+
+Como podemos perceber, sob um nível de significância de 5%, não temos evidências estatísticas para rejeitar a hipótese nula. Ou seja, temos as suposições da ANOVA satisfeitas.
+
+#### Análise de variâncias
+
+As hipóteses da ANOVA são as seguintes:
+
+<!-- Colocar hipóteses -->
+
+```{r}
+modelo <- aov(Altura ~ Espec * luva * irrig, data = dados)
+summary(modelo)[[1]]
+```
+
+Podemos concluir, sob um nível de significância de 5%, que a espécie e quantidade de irrigação, além da interação entre os fatores espécie e quantidade de irrigação realmente influencia na altura dos eucaliptos.
+
+##### Comparações múltiplas
+
+Para realizar as comparações múltiplas utilizaremos o teste de Duncan.
+
+```{r fig.width=10}
+out <- duncan.test(modelo, trt = c("Espec", "irrig"))
+plot(out, variation="IQR")
+```
+
+<!-- Colocar interpretação -->
 <!-- ## Conclusão -->
