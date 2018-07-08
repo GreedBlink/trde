@@ -113,7 +113,7 @@ Considerando a média global como 40, temos a seguinte tabela com os dados:
 
 ```{r}
 dados <- dados %>% 
-  mutate(Altura = round(media + efeito_esp + efeito_irrig + efeito_inter), 2) %>% 
+  mutate(Altura = round(media + efeito_esp + efeito_irrig + efeito_inter, 2)) %>% 
   select(-media, -contains("efeito")) %>% 
   as_tibble()
 
@@ -123,26 +123,24 @@ DT::datatable(dados, rownames = F)
 
 Considerando o seguinte modelo matemático, temos:
 
-$$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\phi)_{jk} + (\tau\phi)_{ik} + \epsilon_{lijk}$$
+$$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\phi)_{jk} + (\tau\phi)_{ik} + \epsilon_{l i j k}$$
 
  onde $(\tau\phi)_{ik}$ = 0, para todo i,k.
- 
- Com o nível de significância de 5%, temos
  
 
 <!-- ## Análise descritiva -->
 
-<!-- ```{r} -->
-<!-- summary(dados) -->
+```{r}
+summary(dados)
 
-<!-- #(médias.trat = with(dados, tapply(resp, trat, mean))) -->
-<!-- (médias.rec = with(dados, tapply(resp, Recip, mean))) -->
-<!-- (médias.esp = with(dados, tapply(resp, Espec, mean))) -->
+#(médias.trat = with(dados, tapply(resp, trat, mean)))
+(médias.rec = with(dados, tapply(resp, , mean)))
+(médias.esp = with(dados, tapply(resp, Espec, mean)))
 
-<!-- (médias = with(dados, tapply(resp, list(Recip, Espec), mean))) -->
-<!-- (variâncias = with(dados, tapply(resp, list(Recip, Espec), var))) -->
-<!-- (desvios = with(dados, tapply(resp, list(Recip, Espec), sd))) -->
-<!-- ``` -->
+(médias = with(dados, tapply(resp, list(Recip, Espec), mean)))
+(variâncias = with(dados, tapply(resp, list(Recip, Espec), var)))
+(desvios = with(dados, tapply(resp, list(Recip, Espec), sd)))
+```
 
 
 
@@ -184,6 +182,6 @@ $$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\p
 
 
 <!-- ## Análise dos resultados -->
-
+<!-- Com o nível de significância de 5%, temos -->
 
 <!-- ## Conclusão -->
