@@ -111,7 +111,6 @@ summary(dados)
 (médias = with(dados, tapply(resp, list(Recip, Espec), mean)))
 (variâncias = with(dados, tapply(resp, list(Recip, Espec), var)))
 (desvios = with(dados, tapply(resp, list(Recip, Espec), sd)))
-
 ```
 
 
@@ -134,6 +133,22 @@ with(dados, boxplot(resp ~ irrig, names=c("1","2"), ylab="Alturas (cm)",
 points(médias.rec, pch="+", col=2, cex=1.5)
 ```
 
+
+
+Em experimentos fatoriais é importante verificar se existe interação entre os fatores. Inicialmente vamos fazer isto graficamente e mais a frente faremos um teste formal para presença de interação. 
+
+```{r,echo = F,fig.align='center'}
+par(mfrow= c(1,2))
+with(dados, interaction.plot(Recip, Espec, resp, las=1, xlab='Recipientes',
+                             ylab='Alturas médias (cm)', col=c('red','blue'), 
+                             bty='l', trace.label=deparse(substitute(Espécies)), 
+                             lwd=2.5))
+
+with(dados, interaction.plot(Espec, Recip, resp, las=1, xlab='Espécies',
+                             ylab='resp médias (cm)', col=c('red','blue'), 
+                             bty='l', trace.label=deparse(substitute(Recipientes)), 
+                             lwd=2.5))
+```
 
 
 
