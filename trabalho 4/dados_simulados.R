@@ -5,7 +5,6 @@ names(m) <- c(
     'direcao',
     'Batch',
     'Strength',
-    'ordem'
-)
+    'ordem')
 
 

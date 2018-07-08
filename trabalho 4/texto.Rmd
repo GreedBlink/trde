@@ -1,0 +1,94 @@
+---
+title: "Delineamento de Experimentos"
+subtitle: ""
+author:  "Jonatha Azevedo/Leonardo Filgueira"
+date: "`r format(Sys.Date(),'%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = F,message = F)
+```
+
+
+## Introdução
+
+Esse trabalho tem como finalidade a elaboração contextual, simulação, análise e a interpretação de resultados de um delineamento de experimentos fatorial completo (produção de eucalipto). Com o tema de produção de eucalipto, será desenvolvido um experimento misto, com a seguinte organização: 
+
+  - Três fatores (com 30 repetições em cada tratamento):
+      - A, 3 níveis
+      - B, 2 níveis 
+      - C, 4 níveis
+
+  - Aplicanto os seguintes efeitos de interação: 
+      -  A e C (em 6 dos tratamentos)
+      - Sem efeito do fator B
+      
+      
+
+## Motivação
+      
+Os eucaliptos constituem-se nas espécies florestais mais utilizadas nos
+reflorestamentos no Brasil. Com uma grande diversidade de utilizações de sua madeira, podemos destacar o reflorestamento ( abastecimento das indústrias de celulose e de chapas).
+
+Recentemente essa madeira passou a ter muito maior expressão pela necessidade de
+sua utilização também para energia, fato que ampliou significativamente a demanda no
+mercado interno.
+
+Devido a essa importância, pretende-se desenvolver um experimento para verificar o crescimento de mudas de eucalipto considerando diferentes tipos de recipientes, espécies e quantidade de irrigação. 
+
+Modelando na estrutura apresentada, segue:
+
+  - **Variável resposta**: Crescimento de mudas de eucalipto (altura em metros)
+  - Fatores e seus níveis:
+    - **Recipiente**: 1, 2 e 3
+    - **Irrigação**: 1 (vez) ,2 (vezes)
+    - **Espécies**: e1 (*citriodora*), e2 (*maculata*), e3 (*maidenii*) e e4 (*paniculata*)
+
+
+## Simulação
+
+```{r}
+set.seed(234)
+require(dplyr)
+croqui = expand.grid(rep=1:30, Espec=c("E1","E2","E3","E4"),irrig = c(1,2), Recip=c("R1","R2",'R3'))
+
+#Especie 1
+alturas1 <- format(rnorm(n = 180,mean = 22.1,sd = 1.8),digits = 3) %>% as.numeric()
+#Especie 2
+alturas2<- format(rnorm(n = 180,mean = 22.5,sd = 1.3),digits = 3) %>% as.numeric()
+#Especie 3
+alturas3 <- format(rnorm(n = 180,mean = 23,sd = 1.7),digits = 3) %>% as.numeric()
+#Especie 4
+alturas4 <- format(rnorm(n = 180,mean = 21.4,sd = 1.8),digits = 3) %>% as.numeric()
+
+
+# aplicando mudancas para diferentes recipientes e irrigação
+
+alturas = c(alturas4,alturas3,alturas2,alturas1)
+dados = data.frame(croqui, resp=alturas)
+tratamento = paste0(seq(1:27),"T")
+trat = factor(rep(tratamento, each=30))
+dados$Trat = with(dados, interaction(Espec, Recip))
+dados <- as_tibble(dados)
+
+
+```
+
+```{r}
+
+dados$resp = ifelse(dados$Recip == "R1", dados$resp + 0.03, dados$resp + 1.2)
+dados$resp = ifelse(dados$irrig == 1, dados$resp - 1.5, dados$resp + 1.5)
+DT::datatable(dados, rownames = F)
+```
+
+
+
+## Análise dos resultados
+
+
+## Conclusão

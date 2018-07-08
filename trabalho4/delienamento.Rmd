@@ -1,6 +1,6 @@
 ---
 title: "Delineamento de Experimentos"
-subtitle: ""
+subtitle: "Delineamento fatorail completo"
 author:  "Jonatha Azevedo/Leonardo Filgueira"
 date: "`r format(Sys.Date(),'%d de %B de %Y')`"
 output:
@@ -8,3 +8,6 @@ output:
     theme: cayman
     highlight: github
 ---
+
+
+  
