@@ -11,81 +11,112 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = F,message = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
 
 ## Introdução
 
-Esse trabalho tem como finalidade a elaboração contextual, simulação, análise e a interpretação de resultados de um delineamento de experimentos fatorial completo (produção de eucalipto). Com o tema de produção de eucalipto, será desenvolvido um experimento misto, com a seguinte organização: 
+Esse trabalho tem como finalidade a elaboração contextual, simulação, análise e a interpretação de resultados de um delineamento de experimentos fatorial completo. Com o tema de produção de eucalipto, será desenvolvido um experimento misto, com a seguinte organização: 
 
   - Três fatores (com 30 repetições em cada tratamento):
-      - A, 3 níveis
-      - B, 2 níveis 
-      - C, 4 níveis
+      - **A**, com 3 níveis;
+      - **B**, 2 níveis;
+      - **C**, 4 níveis.
 
-  - Aplicanto os seguintes efeitos de interação: 
-      - A e C (em 6 dos tratamentos)
+  - Aplicando os seguintes efeitos de interação: 
+      - A e C (em 6 dos tratamentos).
       - Sem efeito do fator B
-      
-      
 
 ## Motivação
       
-Os eucaliptos constituem-se nas espécies florestais mais utilizadas nos
-reflorestamentos no Brasil. Com uma grande diversidade de utilizações de sua madeira, podemos destacar o reflorestamento ( abastecimento das indústrias de celulose e de chapas).
+Os eucaliptos são das espécies florestais mais utilizadas nos
+reflorestamentos no Brasil. Com uma grande diversidade de utilizações de sua madeira, podemos destacar o reflorestamento para o abastecimento das indústrias de celulose e de chapas.
 
-Recentemente essa madeira passou a ter muito maior expressão pela necessidade de
-sua utilização também para energia, fato que ampliou significativamente a demanda no
-mercado interno.
-
-Devido a essa importância, pretende-se desenvolver um experimento para verificar o crescimento de mudas de eucalipto considerando diferentes tipos de recipientes, espécies e quantidade de irrigação. 
+Recentemente essa madeira passou a ter muito maior expressão pela necessidade de sua utilização também para energia, fato que ampliou significativamente a demanda no mercado interno. Devido a essa importância, pretende-se desenvolver um experimento para verificar o crescimento de mudas de eucalipto considerando diferentes tipos de recipientes, espécies e quantidade de irrigação. 
 
 Modelando na estrutura apresentada, segue:
 
-  - **Variável resposta**: Crescimento de mudas de eucalipto (altura em metros)
+  - **Variável resposta**: Altura de mudas de eucalipto (em metros).
   - Fatores e seus níveis:
-    - **Recipiente**: 1, 2 e 3
-    - **Irrigação**: 1 (vez) ,2 (vezes)
+    <!-- - **Recipiente**: 1, 2 e 3 -->
+    - **Irrigação**: Nunca, 3 vezes ao dia, 5 vezes ao dia
+    - **Luvas do agricultor**: Agicultor usava luva de borracha; agricultor não usava luva.
     - **Espécies**: e1 (*citriodora*), e2 (*maculata*), e3 (*maidenii*) e e4 (*paniculata*)
 
+De acordo com NISHIJIMA, Toshio et al. em FREQÜÊNCIAS DE IRRIGAÇÃO PARA Eucalyptus grandis E Pinus elliottii em viveiro, o número ideal de irrigações por dia é de 3 vezes, com uma irrigação de 5 litros por minuto. Então os níveis deste fator foram escolhidas de maneira a seguir o resultado do estudo mencionado.
+
+As luvas de borracha são muito recomendadas, como um Equipamento de Proteção Individual, mas não interferem na altura das árvores.
+
+Com base no site do [Instituto de Pesquisas e Estudos Florestais](http://www.ipef.br/identificacao/cief/especies), as diferentes espécies de espécies de eucalipto tem as seguintes alturas:
+
+- *citriodora*: Até 50 metros de altura.
+- *maculata*:  De 35 a 45 metros de altura.
+- *maidenii*: De 40 a 70 metros de altura (De acordo com Boland et al. em Forest Trees of Australia).
+- *paniculata*: Cerca de 30 metros de altura, podendo até ultrapassar os 50 metros.
 
 ## Simulação
 
-```{r}
+```{r eval = F, echo = FALSE}
+# Chunk com simulação anterior
+
 set.seed(234)
 require(dplyr)
-croqui = expand.grid(rep=1:30, Espec=c("E1","E2","E3","E4"),irrig = c(1,2), Recip=c("R1","R2",'R3'))
+croqui = expand.grid(rep = 1:30, Espec = c("E1", "E2", "E3", "E4"), irrig = c(1, 2), Recip = c("R1", "R2", 'R3'))
 
-#Especie 1
-alturas1 <- format(rnorm(n = 180,mean = 22.1,sd = 1.8),digits = 3) %>% as.numeric()
+# Especie 1
+alturas1 <- format(rnorm(n = 180, mean = 40, sd = 3), digits = 3) %>% as.numeric()
 #Especie 2
-alturas2<- format(rnorm(n = 180,mean = 22.5,sd = 1.3),digits = 3) %>% as.numeric()
+alturas2<- format(rnorm(n = 180, mean = 40, sd = 2), digits = 3) %>% as.numeric()
 #Especie 3
-alturas3 <- format(rnorm(n = 180,mean = 23,sd = 1.7),digits = 3) %>% as.numeric()
+alturas3 <- format(rnorm(n = 180, mean = 55, sd = 4),digits = 3) %>% as.numeric()
 #Especie 4
-alturas4 <- format(rnorm(n = 180,mean = 21.4,sd = 1.8),digits = 3) %>% as.numeric()
+alturas4 <- format(rnorm(n = 180, mean = 35, sd = 3), digits = 3) %>% as.numeric()
 
 
 # aplicando mudancas para diferentes recipientes e irrigação
 
-alturas = c(alturas4,alturas3,alturas2,alturas1)
-dados = data.frame(croqui, resp=alturas)
-tratamento = paste0(seq(1:27),"T")
-trat = factor(rep(tratamento, each=30))
-dados$Trat = with(dados, interaction(Espec, Recip))
+alturas <- c(alturas4, alturas3, alturas2, alturas1)
+dados <- bind_cols(croqui, resp = alturas)
+tratamento <- paste0(seq(1:27),"T")
+trat<- factor(rep(tratamento, each = 30))
+dados$Trat <- with(dados, interaction(Espec, Recip))
 dados <- as_tibble(dados)
-
-
 ```
 
 
+```{r}
+# Chunk com nova simulação
+set.seed(234)
+
+require(dplyr)
+
+dados <- expand.grid(rep = 1:30, Espec = c("E1", "E2", "E3", "E4"), luva = c("Luva", "Sem Luva"), irrig = c(0, 3, 5), media = 40)
+
+dados$efeito_esp <- ifelse(dados$Espec == "E1", rnorm(180, 4, 3),
+                     ifelse(dados$Espec == "E2", rnorm(180, 0, 3),
+                            ifelse(dados$Espec == "E3", rnorm(180, 12, 3),
+                                   rnorm(180, 5, 3))))
+
+dados$efeito_irrig <- ifelse(dados$irrig == 0, rnorm(240, -3, 2),
+                             ifelse(dados$irrig == 3, rnorm(240, 5, 2),
+                                    rnorm(240, 0, 2)))
+
+dados$efeito_inter <- ifelse(dados$Espec == "E3" & dados$irrig == 3, rnorm(30, 3, 2),
+                             ifelse(dados$Espec == "E2" & dados$irrig == 0, rnorm(30, -5, 2),
+                             ifelse(dados$Espec == "E3" & dados$irrig == 5, rnorm(30, 1, 2),
+                             rep(0, 30))))
+```
+
+Considerando a média global como 40, temos a seguinte tabela com os dados:
 
 
 ```{r}
+dados <- dados %>% 
+  mutate(Altura = round(media + efeito_esp + efeito_irrig + efeito_inter), 2) %>% 
+  select(-media, -contains("efeito")) %>% 
+  as_tibble()
 
-dados$resp = ifelse(dados$Recip == "R1", dados$resp + 0.03, dados$resp + 1.2)
-dados$resp = ifelse(dados$irrig == 1, dados$resp - 1.5, dados$resp + 1.5)
 DT::datatable(dados, rownames = F)
 ```
 
@@ -99,60 +130,60 @@ $$Y_{ijkl} = \mu + \tau_{i} + \beta_{j}+ \phi_{k}  + (\tau\beta)_{ij} + (\beta\p
  Com o nível de significância de 5%, temos
  
 
-## Análise descritiva
+<!-- ## Análise descritiva -->
 
-```{r}
-summary(dados)
+<!-- ```{r} -->
+<!-- summary(dados) -->
 
-#(médias.trat = with(dados, tapply(resp, trat, mean)))
-(médias.rec = with(dados, tapply(resp, Recip, mean)))
-(médias.esp = with(dados, tapply(resp, Espec, mean)))
+<!-- #(médias.trat = with(dados, tapply(resp, trat, mean))) -->
+<!-- (médias.rec = with(dados, tapply(resp, Recip, mean))) -->
+<!-- (médias.esp = with(dados, tapply(resp, Espec, mean))) -->
 
-(médias = with(dados, tapply(resp, list(Recip, Espec), mean)))
-(variâncias = with(dados, tapply(resp, list(Recip, Espec), var)))
-(desvios = with(dados, tapply(resp, list(Recip, Espec), sd)))
-```
-
-
-
-```{r}
-# Gráfico de caixas
-par(mfrow=c(2,2))
-
-# Espécies
-with(dados, boxplot(resp ~ Espec, names=c("E1", "E2","E3","E4"), ylab="Alturas (cm)", 
-                    xlab="Espécies", las=1, col='LightYellow'))
-points(médias.esp, pch="+", col=2, cex=1.5)
-# Recipientes
-with(dados, boxplot(resp ~ Recip, names=c("R1", "R2", "R3"), ylab="Alturas (cm)", 
-                    xlab="Recipientes", las=1, col='LightYellow'))
-# Irrigacao
-with(dados, boxplot(resp ~ irrig, names=c("1","2"), ylab="Alturas (cm)", 
-                    xlab="Recipientes", las=1, col='LightYellow'))
-
-points(médias.rec, pch="+", col=2, cex=1.5)
-```
+<!-- (médias = with(dados, tapply(resp, list(Recip, Espec), mean))) -->
+<!-- (variâncias = with(dados, tapply(resp, list(Recip, Espec), var))) -->
+<!-- (desvios = with(dados, tapply(resp, list(Recip, Espec), sd))) -->
+<!-- ``` -->
 
 
 
-Em experimentos fatoriais é importante verificar se existe interação entre os fatores. Inicialmente vamos fazer isto graficamente e mais a frente faremos um teste formal para presença de interação. 
+<!-- ```{r} -->
+<!-- # Gráfico de caixas -->
+<!-- par(mfrow=c(2,2)) -->
 
-```{r,echo = F,fig.align='center'}
-par(mfrow= c(1,2))
-with(dados, interaction.plot(Recip, Espec, resp, las=1, xlab='Recipientes',
-                             ylab='Alturas médias (cm)', col=c('red','blue'), 
-                             bty='l', trace.label=deparse(substitute(Espécies)), 
-                             lwd=2.5))
+<!-- # Espécies -->
+<!-- with(dados, boxplot(resp ~ Espec, names=c("E1", "E2","E3","E4"), ylab="Alturas (cm)",  -->
+<!--                     xlab="Espécies", las=1, col='LightYellow')) -->
+<!-- points(médias.esp, pch="+", col=2, cex=1.5) -->
+<!-- # Recipientes -->
+<!-- with(dados, boxplot(resp ~ Recip, names=c("R1", "R2", "R3"), ylab="Alturas (cm)",  -->
+<!--                     xlab="Recipientes", las=1, col='LightYellow')) -->
+<!-- # Irrigacao -->
+<!-- with(dados, boxplot(resp ~ irrig, names=c("1","2"), ylab="Alturas (cm)",  -->
+<!--                     xlab="Recipientes", las=1, col='LightYellow')) -->
 
-with(dados, interaction.plot(Espec, Recip, resp, las=1, xlab='Espécies',
-                             ylab='resp médias (cm)', col=c('red','blue'), 
-                             bty='l', trace.label=deparse(substitute(Recipientes)), 
-                             lwd=2.5))
-```
-
-
-
-## Análise dos resultados
+<!-- points(médias.rec, pch="+", col=2, cex=1.5) -->
+<!-- ``` -->
 
 
-## Conclusão
+
+<!-- Em experimentos fatoriais é importante verificar se existe interação entre os fatores. Inicialmente vamos fazer isto graficamente e mais a frente faremos um teste formal para presença de interação.  -->
+
+<!-- ```{r,echo = F,fig.align='center'} -->
+<!-- par(mfrow= c(1,2)) -->
+<!-- with(dados, interaction.plot(Recip, Espec, resp, las=1, xlab='Recipientes', -->
+<!--                              ylab='Alturas médias (cm)', col=c('red','blue'),  -->
+<!--                              bty='l', trace.label=deparse(substitute(Espécies)),  -->
+<!--                              lwd=2.5)) -->
+
+<!-- with(dados, interaction.plot(Espec, Recip, resp, las=1, xlab='Espécies', -->
+<!--                              ylab='resp médias (cm)', col=c('red','blue'),  -->
+<!--                              bty='l', trace.label=deparse(substitute(Recipientes)),  -->
+<!--                              lwd=2.5)) -->
+<!-- ``` -->
+
+
+
+<!-- ## Análise dos resultados -->
+
+
+<!-- ## Conclusão -->
