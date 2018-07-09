@@ -95,7 +95,11 @@ require(dplyr)
 if(!require(agricolae)){ 
   install.packages("agricolae", repos = 'http://cran.us.r-project.org')
 }
+if(!require(DescTools)){ 
+  install.packages("DescTools", repos = 'http://cran.us.r-project.org')
+}
 require(agricolae)
+require(DescTools)
 
 dados <- expand.grid(rep = 1:30, Espec = c("E1", "E2", "E3", "E4"), luva = c("Luva", "Sem Luva"), irrig = c(0, 3, 5), media = 40)
 
@@ -266,20 +270,22 @@ Podemos concluir, sob um nível de significância de 5%, que a espécie e quanti
 
 ##### Comparações múltiplas
 
-Uma análise de variância (ANOVA) pode mostrar se existe diferença significante entre grupos, mas não diz quais grupos diferem entre si. Então é preciso comparar as médias, logo após a ANOVA. Existem diversos testes para comparação de médias, para realizar as comparações múltiplas utilizaremos o teste de Duncan.
+Uma análise de variância (ANOVA) pode mostrar se existe diferença significante entre algum par de grupos, mas não diz quais grupos diferem entre si. Então é preciso comparar as médias, logo após a ANOVA. Existem diversos testes para comparação de médias, para realizar as comparações múltiplas, mas utilizaremos o teste de Duncan.
 
 O teste Duncam é um teste aplicado depois da ANOVA para identificar os pares de médias (de pelo menos 3) que difiram estatísticamente. Ele considera as seguintes hipóteses:
 
 
-$$\begin{cases} H_{0}: \mu_i - \mu_i' = 0 \\
-H_{0}: \mu_i - \mu_i' \neq 0
+$$\begin{cases} H_{0}: \mu_i = \mu_j \\
+H_{0}: \mu_i  \neq \mu_j \qquad \forall i \neq j
 \end{cases}$$
 
-Rejeitamos $H_0$ se $|\hat{\mu_i} - \hat{\mu_i'} |>= 0$.
+<!-- Rejeitamos $H_0$ se $|\hat{\mu_i} - \hat{\mu_i}' |>= 0$. -->
 
 ```{r fig.width=10}
-out <- duncan.test(modelo, trt = c("Espec", "irrig"))
-out
+# out <- duncan.test(modelo, trt = c("Espec", "irrig"))
+# out
+
+PostHocTest(modelo, method = "duncan")
 ```
 
 
