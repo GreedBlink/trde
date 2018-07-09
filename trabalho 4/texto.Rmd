@@ -316,7 +316,16 @@ names(unlist(teste_mod)[unlist(teste_mod) < 0.05])
 
 Interessante notar que o uso da luva não é significativo para o experimento, resultado que corrobora a simulação feita. Com o teste, e a regra de rejeição da hipótese nula, temos que as diferenças que possuem o 0 no intervalo não são significativas.
 
+Com o objeto a seguir podemos visualizar a combinação com maior maior média e assim, ela será escolhida para se obter eucaliptos mais altos (fundamentando a espécie, irrigação e o uso de luvas)
 
+```{r}
+aux <- dados %>% group_by(Espec,irrig) %>% 
+  summarise(media = mean(Altura)) %>% 
+  arrange(-media)
+aux[1,]
+```
+
+up
 
 
 <!-- ## Conclusão -->
