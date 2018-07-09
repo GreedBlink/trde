@@ -314,7 +314,7 @@ names(unlist(teste_mod)[unlist(teste_mod) < 0.05])
 ```
 
 
-Interessnate notar que o uso da luva não é significativo para o experimento, resultado que corrobora a simulação feita. Com o teste, e a regra de rejeição da hipótese nula, temos que as diferências que possuem o 0 no intervalo não são significativos.
+Interessnate notar que o uso da luva não é significativo para o experimento, resultado que corrobora a simulação feita. Com o teste, e a regra de rejeição da hipótese nula, temos que as diferenças que possuem o 0 no intervalo não são significativas.
 
 
 
