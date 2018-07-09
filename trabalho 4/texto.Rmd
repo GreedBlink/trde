@@ -291,14 +291,28 @@ PostHocTest(modelo, method = "duncan")
 
 <!-- Colocar interpretação -->
 
-```{r}
-plot(out, variation="IQR")
-```
+
+
 ```{r}
 #par(mfrow = c(1,2))
 #plot(out, variation="IQR")
 plot(DescTools::PostHocTest(modelo, method = "duncan"))
 ```
+
+Fazendo uma pequena mudança para obter os 
+
+```{r}
+teste <- PostHocTest(modelo, method = "duncan") # modelo é aov()
+
+p.adjust(teste$Espec[, 4], method = "bonferroni")
+
+teste_mod <- lapply(teste, function(x){p.adjust(x[, 4], method = "bonferroni")})
+
+lapply(teste_mod, function(x){x < 0.05})
+unlist(teste_mod)[unlist(teste_mod) < 0.05]
+names(unlist(teste_mod)[unlist(teste_mod) < 0.05])
+```
+
 
 Interessnate notar que o uso da luva não é significativo para o experimento, resultado que corrobora a simulação feita. Com o teste, e a regra de rejeição da hipótese nula, temos que as diferências que possuem o 0 no intervalo não são significativos.
 

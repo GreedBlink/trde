@@ -1,1 +1,0 @@
-# trabalho 4 de delineamento de experimentos
