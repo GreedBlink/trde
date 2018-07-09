@@ -11,7 +11,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F,fig.align = "center")
 ```
 
 
@@ -145,6 +145,7 @@ summary(dados)
 
 # (medias = with(dados, tapply(Altura, list(irrig, luva, Espec), mean)))
 # (variancias = with(dados, tapply(Altura, list(irrig, luva, Espec), var)))
+
 # (desvios = with(dados, tapply(Altura, list(irrig, luva, Espec), sd)))
 ```
 
@@ -238,21 +239,57 @@ As hipóteses da ANOVA são as seguintes:
 
 <!-- Colocar hipóteses -->
 
+$$\begin{cases}
+ H_{0}: \tau_{1} = \tau_{2} = \dots \tau_{a} = 0  \\ 
+  H_{1}: \tau_{i} \neq 0 \mbox{ pelo menos para um i} \mbox{ (efeito principal do factor A)} 
+\end{cases}$$
+
+
+$$\begin{cases}
+ H_{0}: \beta_{1} = \beta_{2} = \dots \beta_{b} = 0  \\ 
+  H_{1}: \beta_{i} \neq 0 \mbox{ pelo menos para um i} \mbox{ (efeito principal do factor B)}
+\end{cases}$$
+
+
+$$\begin{cases}
+ H_{0}: \phi_{1} = \phi_{2} = \dots \phi_{c} = 0  \\ 
+  H_{1}: \phi_{i} \neq 0 \mbox{ pelo menos para um i} \mbox{ (efeito principal do factor C)}
+\end{cases}$$ 
+
+
 ```{r}
 modelo <- aov(Altura ~ Espec * luva * irrig, data = dados)
-summary(modelo)[[1]]
+summary(modelo)
 ```
 
 Podemos concluir, sob um nível de significância de 5%, que a espécie e quantidade de irrigação, além da interação entre os fatores espécie e quantidade de irrigação realmente influencia na altura dos eucaliptos.
 
 ##### Comparações múltiplas
 
-Para realizar as comparações múltiplas utilizaremos o teste de Duncan.
+Uma análise de variância (ANOVA) pode mostrar se existe diferença significante entre grupos, mas não diz quais grupos diferem entre si. Então é preciso comparar as médias, logo após a ANOVA. Existem diversos testes para comparação de médias, para realizar as comparações múltiplas utilizaremos o teste de Duncan.
+
+O teste Duncam é um teste aplicado depois da ANOVA para identificar os pares de médias (de pelo menos 3) que difiram estatísticamente. Ele considera as seguintes hipóteses:
+
+
+$$\begin{cases} H_{0}: \mu_i - \mu_i' = 0 \\
+H_{0}: \mu_i - \mu_i' \neq 0
+\end{cases}$$
+
+Rejeitamos $H_0$ se $|\hat{\mu_i} - \hat{\mu_i'} |>= 0$.
 
 ```{r fig.width=10}
 out <- duncan.test(modelo, trt = c("Espec", "irrig"))
+out
+```
+
+
+<!-- Colocar interpretação -->
+
+```{r}
 plot(out, variation="IQR")
 ```
 
-<!-- Colocar interpretação -->
+
+
+
 <!-- ## Conclusão -->
