@@ -325,7 +325,6 @@ aux <- dados %>% group_by(Espec,irrig) %>%
 aux[1,]
 ```
 
-up
-
+Concluímos que a espécie 3 (maidenii) de eucalipto com 3 irrigaçes, cresce em média 59,4 metro, se mostrando a melhor combinação possível no experimento fatorial realizado.
 
 <!-- ## Conclusão -->
