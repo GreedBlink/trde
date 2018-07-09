@@ -196,11 +196,9 @@ with(dados, interaction.plot(Espec, luva, Altura, las=1, xlab = 'Espécies', yla
 
 ## Análise inferencial
 
-### Anova completa
-
 A seguir, relações que foram sugeridas a partir da análise descritiva serão verificadas a partir de testes de hipóteses. Nosso objetivo é verificar se as espécies, o uso de luvas e a irrigação possuem relação com a altura das árvores, então iremos buscar aplicar uma ANOVA. Contudo, as suposições da análise de variância devem ser satisfeitas. Primeiramente, os níveis de todos os fatores são independentes, então esta primeira suposição está satisfeita. A seguir, verificaremos normalidade. Todos os testes de hipóteses serão aplicados sob um nível de significância de 5%.
 
-#### Teste de normalidade
+### Teste de normalidade
 
 Hipóteses
 
@@ -224,7 +222,7 @@ normalidade %>%
 
 Como pudemos perceber, sob um nível de significância de 5%, a hipótese de normalidade não foi rejeitada para nenhuma combinação de níveis dos fatores. Logo, podemos prosseguir, verificando homocedasticidade. Utilizaremos o teste de Bartlett, que tem as seguintes hipóteses:
 
-#### Teste de homocedasticidade
+### Teste de homocedasticidade
 
 $$\begin{cases}
  H_{0}: \sigma^2_i = \sigma^2_j , \forall i \neq j \\ 
@@ -237,11 +235,10 @@ bartlett.test(Altura ~ interaction(Espec, luva, irrig), data = dados)
 
 Como podemos perceber, sob um nível de significância de 5%, não temos evidências estatísticas para rejeitar a hipótese nula. Ou seja, temos as suposições da ANOVA satisfeitas.
 
-#### Análise de variâncias
+### Análise de variâncias
 
 As hipóteses da ANOVA são as seguintes:
 
-<!-- Colocar hipóteses -->
 
 $$\begin{cases}
  H_{0}: \tau_{1} = \tau_{2} = \dots \tau_{a} = 0  \\ 
@@ -268,7 +265,7 @@ summary(modelo)
 
 Podemos concluir, sob um nível de significância de 5%, que a espécie e quantidade de irrigação, além da interação entre os fatores espécie e quantidade de irrigação realmente influencia na altura dos eucaliptos.
 
-##### Comparações múltiplas
+#### Comparações múltiplas
 
 Uma análise de variância (ANOVA) pode mostrar se existe diferença significante entre algum par de grupos, mas não diz quais grupos diferem entre si. Então é preciso comparar as médias, logo após a ANOVA. Existem diversos testes para comparação de médias, para realizar as comparações múltiplas, mas utilizaremos o teste de Duncan.
 
@@ -279,30 +276,20 @@ $$\begin{cases} H_{0}: \mu_i = \mu_j \\
 H_{0}: \mu_i  \neq \mu_j \qquad \forall i \neq j
 \end{cases}$$
 
-<!-- Rejeitamos $H_0$ se $|\hat{\mu_i} - \hat{\mu_i}' |>= 0$. -->
 
-```{r fig.width=10}
-# out <- duncan.test(modelo, trt = c("Espec", "irrig"))
-# out
-
+```{r }
 PostHocTest(modelo, method = "duncan")
 ```
 
 
-<!-- Colocar interpretação -->
-
-
-
 ```{r}
-#par(mfrow = c(1,2))
-#plot(out, variation="IQR")
 plot(DescTools::PostHocTest(modelo, method = "duncan"))
 ```
 
-Fazendo uma pequena mudança para obter os 
+Fazendo uma pequena mudança para obter os p-valores ajustados (com correção de Bonferroni), que é equivalente a corrigir o nível de significância
 
 ```{r}
-teste <- PostHocTest(modelo, method = "duncan") # modelo é aov()
+teste <- PostHocTest(modelo, method = "duncan") 
 
 p.adjust(teste$Espec[, 4], method = "bonferroni")
 
@@ -327,4 +314,4 @@ aux[1,]
 
 Concluímos que a espécie 3 (maidenii) de eucalipto com 3 irrigaçes, cresce em média 59,4 metro, se mostrando a melhor combinação possível no experimento fatorial realizado.
 
-<!-- ## Conclusão -->
+
